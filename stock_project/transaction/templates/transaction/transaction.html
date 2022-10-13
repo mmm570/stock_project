@@ -3,12 +3,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首頁</title>
+    <title>虛擬交易</title>
     <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
-    
 </head>
 <body>
+	{% if messages %}
+		<script>
+		    {% for msg in messages %}
+		        alert('{{ msg.message }}');
+		    {% endfor %}
+		</script>
+	{% endif %}
     <div class="top">
 		<header>
             <div><img src="/static/stock/img/logo.png" alt="logo"></div>
@@ -16,38 +23,28 @@
 		</header>
 		<nav>
 			<ul class="nav">
-				<li  id="foo" >首頁</li>
+				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
 				<li><a href="{% url 'markettrend:markettrend' %}">大盤走勢</a></li>
 				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
 				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
 				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
 				<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
-				<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
+				<li  id="foo">虛擬交易</li>
 				<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
 			</ul>
 		</nav>
 	</div>
 	<div id="main">
-		<div id="square">
-			<div id="new">
-				<h1>熱門新聞</h1><br>
-				{%for i in d %}
-					<div id="new_div">
-						<a href={{i.1}} target='_blank'>{{i.0}}</a>
-						<div class="wrap">
-		  					<div class="cont">
-								<p class="txt">{{i.2}}</p>
-							</div>
-						</div>
-					</div>
-				{%endfor%}
-			</div>
+		<div id="transaction_from">
+			<form id="login_register" action="login_register/" method="post">
+				<p>虛擬交易</p>
+				{% csrf_token %}
+				{{ who_login.as_p }}
+				<div>
+					<input type="submit" name="login" value="登入">
+					<input type="submit" name="register" value="註冊帳號">
+				</div>
 		</div>
-		<div id="home_bg"><img src="/static/stock/img/bg_img.png" alt=""></div>
-		<div id="circle">
-			<p>ＷElCOME<br><span>朝陽虛擬智選股</span></p>
-		</div>
-		
 	</div>
 	<div id="qr_code">
 		<p>line好友添加</p>

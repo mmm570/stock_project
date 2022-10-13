@@ -24,6 +24,9 @@ SECRET_KEY = 'django-insecure-c6&07jf#9!s7zhwgu!q-oen&88wl&k*i^=zj2@tx)eaxbx*-_m
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+import os
+if 'DYNO' in os.environ:    # Running on Heroku
+    DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -81,17 +84,23 @@ WSGI_APPLICATION = 'stock_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'userdb',
-        'USER': 'dbuser',
-        'PASSWORD': 'dbuser',
-        'HOST': 'localhost',
-        'PORT': '',
+if DEBUG:   # Running on the development environment
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'userdb',
+            'USER': 'dbuser',
+            'PASSWORD': 'dbuser',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
     }
-}
-
+else:   # Running on Heroku
+    # Parse database configuration from $DATABASE_URL
+    import dj_database_url
+    DATABASES = {'default':dj_database_url.config()}
+    # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -134,3 +143,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# For Heroku deployment
+STATIC_ROOT = 'staticfiles'

@@ -14,17 +14,17 @@ $(document).ready(function(){
 			    success: function(data) {
 					$('#choose_div2').remove();
 			    	$('.fig').remove();
-			    	$('#choose2').after(data);
-			    	$('#choose2~div').attr('class','fig');
+			    	$('#choose_div').after(data);
+			    	$('#choose_div~div').attr('class','fig');
 					$("#status").hide(); 
-			    	if (Number($('#redORgreen tbody tr td:eq(9)').text())>0){
-			    		 $('#redORgreen tbody tr td:eq(9)').attr('id','red');
+			    	if (Number($('tbody tr td:eq(9)').text())>0){
+			    		 $('tbody tr td:eq(9)').attr('id','red');
 			    		}
-			    	else if(Number($('#redORgreen  tbody tr td:eq(9)').text())<0){
-			    		$('#redORgreen tbody tr td:eq(9)').attr('id','green');
+			    	else if(Number($('tbody tr td:eq(9)').text())<0){
+			    		$('tbody tr td:eq(9)').attr('id','green');
 			    		}
-			    	else if(Number($('#redORgreen  tbody tr td:eq(9)').text())=0){
-			    		$('#redORgreen  tbody tr td:eq(9)').attr('id','white');
+			    	else{
+			    		$('tbody tr td:eq(9)').attr('id','white');
 			    		}
 			    	if ((dt.getHours()<=9 && dt.getHours()>=13) || (dt.getHours()==13 && dt.getMinutes()>=30)){
 			    		setTimeout(refresh,1000*10);
@@ -88,8 +88,8 @@ $(document).ready(function(){
 		})
 		.done(function(data) {
 			$("#status").hide();
-			$('#aa').next().remove();
-		    $('#aa').after(data);
+			$(e.target).next().remove();
+		    $(e.target).after(data);
 		})
 		.fail(function() {
 			alert('查無資訊')
@@ -107,8 +107,8 @@ $(document).ready(function(){
 		})
 		.done(function(data) {
 			$("#status").hide(); 
-			$('#aaa').nextAll().remove();
-		    $('#aaa').after(data);
+			$(e.target).nextAll().remove();
+		    $(e.target).after(data);
 		})
 		.fail(function() {
 			alert('查無資訊')
