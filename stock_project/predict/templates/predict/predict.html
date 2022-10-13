@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票預測</title>
+    <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+	<script>
+	$( function() {
+	  var availableTags = [
+		"057457,長榮凱基2C購01", "05745P,臺股指群益1B售12",
+		"1423,利華", "1432,大魯閣", 
+	  	"2330,台積電","2610,華航","2618,長榮航","2303,聯電","2609,陽明",
+	  	"3701,大眾控", "3702,大聯大",
+	  	"4935,茂林-KY",
+	  	"6669,緯穎", "6670,復盛應用",
+	  	 "8940,新天地", "8996,高力", "9802,鈺齊-KY", "9902,台火",
+	  ];
+	  $( "#newsImg" ).autocomplete({
+	    source: availableTags,
+	    autoFocus: true
+	  });
+	} );
+	</script>
+</head>
+<body>
+	{% if messages %}
+		<script>
+		    {% for msg in messages %}
+		        alert('{{ msg.message }}');
+		    {% endfor %}
+		</script>
+	{% endif %}
+    <div class="top">
+		<header>
+            <div><img src="/static/stock/img/logo.png" alt="logo"></div>
+			<p>朝陽虛擬智選股</p>
+		</header>
+		<nav>
+			<ul class="nav">
+				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
+				<li><a href="{% url 'markettrend:markettrend' %}">大盤走勢</a></li>
+				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
+				<li><a href="{% url 'chips:chips' %}">籌碼選股</a></li>
+				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
+				<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
+				<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
+				<li id="foo">股票預測</li>
+			</ul>
+		</nav>
+	</div>
+	
+	<div id="main">
+		<div id="status"><img src="/static/stock/img/Spin-1s-200px.gif"/></div>
+		<div id='predict_from'>
+			<p>新聞評級<span>(使用yahoo股市的新聞網址，判斷新聞的好壞評級) 非常好-好-普通-不好-非常不好</span></p>
+			<div id="aa">
+			   	<input id='newsUrl' type='text' placeholder='yahoo新聞網址'>
+			   	<input id='submit_news' type="submit" value="送出">
+		   	</div>
+		</div>
+		<div id='predict_from'>
+			<p>股價預測<span>(1.使用yahoo股市的新聞，劃出新聞評判的圖形。2.使用昨日收盤價預測出今日股價，並與實際股價已起繪製圖形做比較)</span></p>
+			<div id="aaa"  class="ui-widget">
+			   	<input id='newsImg' type='text' placeholder='股票代碼/名稱'>
+			   	<input id='submit_newsimg' type="submit" value="送出">
+		   	</div>
+	   	</div>
+	</div>
+	<div id='qr_div' >
+		<div id="qr_code">
+			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
+			<img src="/static/stock/img/906csrwq.png" alt="">
+		</div>
+		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
+	</div>
+<script src="{% static 'stock/js/all.js' %}" type="text/javascript"></script>		
+</body>
+</html>

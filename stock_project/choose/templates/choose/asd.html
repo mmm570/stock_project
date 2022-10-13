@@ -1,0 +1,17 @@
+{% autoescape off %}
+	{{newfig}}
+{% endautoescape %}
+<br>
+<table class='fig' id='news_table'>
+	<tr>
+		<th>新聞</th>
+		<th>預測評級</th>
+	</tr>
+	{%for i in newData %}
+	<tr>
+		<td> <a href='{{i.3}}' target='_blank'>{{i.0}}</a> </td>
+		<td> {{i.4}} </td>
+	</tr>
+	{% endfor %}
+
+</table>

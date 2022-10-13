@@ -1,0 +1,14 @@
+<table>
+	<tr>
+		<th>新聞標題</th>
+		<th>新聞發布時間</th>
+		<th>預測評級</th>
+	</tr>
+	{%for i in newData %}
+	<tr>
+		<td>{{i.0}}</td>
+		<td> {{i.1}} </td>
+		<td> {{i.3}} </td>
+	</tr>
+	{% endfor %}
+</table>

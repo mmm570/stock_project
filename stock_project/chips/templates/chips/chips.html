@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>籌碼選股</title>
+    <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
+</head>
+<body>
+    <div class="top">
+		<header>
+            <div><img src="/static/stock/img/logo.png" alt="logo"></div>
+			<p>朝陽虛擬智選股</p>
+		</header>
+		<nav>
+			<ul class="nav">
+				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
+				<li><a href="{% url 'markettrend:markettrend' %}">大盤走勢</a></li>
+				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
+				<li id="foo">籌碼排序</li>
+				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
+				<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
+				<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
+				<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
+            </ul>
+		</nav>
+	</div>
+	<div id="main">
+		<div id="chips_div">
+			<form id="choose2" action="chips2" method="get">
+		   		{{ who.as_p }}
+		   		<input id='submit'type="submit" value="送出">
+		   	</form>
+	   	</div>
+	   	<p>{{title}}</p>
+	   	<div id='chips_table'>
+	   		{% autoescape off %}
+		    	{{table}}
+		    {% endautoescape %}
+	   	</div>
+	</div>
+   </form>
+   <div id='qr_div' >
+		<div id="qr_code">
+			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
+			<img src="/static/stock/img/906csrwq.png" alt="">
+		</div>
+		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
+	</div>
+</body>
+</html>

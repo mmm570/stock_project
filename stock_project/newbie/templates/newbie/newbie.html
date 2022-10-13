@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新手教學</title>
+    <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="top">
+		<header>
+            <div><img src="/static/stock/img/logo.png" alt="logo"></div>
+			<p>朝陽虛擬智選股</p>
+		</header>
+		<nav>
+			<ul class="nav">
+				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
+				<li><a href="{% url 'markettrend:markettrend' %}">大盤走勢</a></li>
+				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
+				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
+				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
+				<li  id="foo">新手教學</li>
+				<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
+				<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
+			</ul>
+        </nav>
+	</div>
+	<div id="main">
+		<!--  <div id='slider' class='slider'>
+			<div class='slider_scroll' id='slider_scroll'>
+				<div class='slider_main' id='slider_main'>
+					<div class='item'>
+						<a herf='#'>
+							<img src="{% static 'stock/img/1_teach.png' %}" width=800 height=800>							
+						</a>					
+					</div>
+					<div class='item'>
+					  	<a herf='#'>
+							<img src="{% static 'stock/img/2_teach.png' %}" width=800 height=800>							
+						</a>					
+					</div>
+				</div>
+				
+				<span class='next' id='next'></span>
+				<span class='prev' id='prev'></span>
+			</div>
+			<div class='slider_index' id='slider_index'>
+			
+			</div>
+		</div>-->
+		<div id="carouselExampleIndicators" class="carousel carousel-dark slide w-50 mx-auto " data-bs-ride="carousel" style="margin-top:100px">
+			 <div class="carousel-indicators">
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6" aria-label="Slide 7"></button>
+			  </div>
+			  <div class="carousel-inner">
+			    <div class="carousel-item active">
+			      <img src="{% static 'stock/img/1_teach.png' %}" class="d-block w-100">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="{% static 'stock/img/2_teach.png' %}" class="d-block w-100">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="{% static 'stock/img/3_teach.png' %}" class="d-block w-100">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="{% static 'stock/img/4_teach.png' %}" class="d-block w-100">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="{% static 'stock/img/5_teach.png' %}" class="d-block w-100">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="{% static 'stock/img/6_teach.png' %}" class="d-block w-100">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="{% static 'stock/img/7_teach.png' %}" class="d-block w-100">
+			    </div>
+			  </div>
+			  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+			    <span class="carousel-control-prev-icon" aria-hidden="true" style="color:red;"></span>
+			    <span class="visually-hidden" >Previous</span>
+			  </button>
+			  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+			    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+			    <span class="visually-hidden">Next</span>
+			  </button>
+		</div>
+					
+	</div>
+	<div id='qr_div' >
+		<div id="qr_code">
+			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
+			<img src="/static/stock/img/906csrwq.png" alt="">
+		</div>
+		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
+	</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+	<meta http-equiv="refresh" content="20">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大盤走勢</title>
+    <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
+</head>
+<body>
+    <div class="top">
+		<header>
+            <div><img src="/static/stock/img/logo.png" alt="logo"></div>
+			<p>朝陽虛擬智選股</p>
+		</header>
+		<nav>
+			<ul class="nav">
+				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
+				<li id="foo">大盤走勢</li>
+				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
+				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
+				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
+				<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
+				<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
+				<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
+			</ul>
+		</nav>
+	</div>
+	<div id="main">
+		{% autoescape off %}
+			{{fig}}
+		{% endautoescape %}
+		<table id='market_table'>
+			<tr>
+				<th>加權指數</th>
+			{%for i in stock_data %}
+				<th>{{i}}</th>
+			{% endfor %}
+				<th>成交金額(億)</th>
+			{%for i in stock_data_2 %}
+				<th>{{i}}</th>
+			{% endfor %}
+			</tr>
+		</table>
+	</div>
+	<div id='qr_div' >
+		<div id="qr_code">
+			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
+			<img src="/static/stock/img/906csrwq.png" alt="">
+		</div>
+		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
+	</div>
+</body>
+</html>
