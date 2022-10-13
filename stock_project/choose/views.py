@@ -33,11 +33,10 @@ import plotly.graph_objs as go
 import plotly.offline as opy
 from urllib.request import urlopen
 import pandas as pd
+import datetime
+import requests
 import sched
-import math 
-import twstock
-# from talib import abstract #Ta-Lib分析套件
-# import random    
+import math     
     
 
 def choose(request):
@@ -122,18 +121,11 @@ def timely_stock(request):
     for i in range(len(data)-1):
         if get_text == data[i]['name']:
             targets=data[i]['stock']
-            title_text=targets+' '+get_text+'即時股價'
+            title_text=targets+' '+get_text
         elif get_text ==data[i]['stock']:
             targets=get_text
             stock_name=data[i]['name']
-            title_text=targets+' '+stock_name+'即時股價'
-    #隨機推薦
-    # stock = twstock.Stock('2330')  
-    # bfp = twstock.BestFourPoint(stock)
-    # target_price = stock.fetch_from(2022, 9)
-    # name_attribute = ['Date', 'Capacity', 'Turnover', 'Open', 'high', 'low', 'close', 'Change', 'Transcation']
-    # df1 = pd.DataFrame(columns  = name_attribute, data = target_price)
-    #即時股價
+            title_text=targets+' '+stock_name
     res = requests.get('https://tw.stock.yahoo.com/_td-stock/api/resource/FinanceChartService.ApacLibraCharts;autoRefresh=1653627795519;symbols=%5B%22'+targets+'.TW%22%5D;type=tick?bkt=&device=desktop&ecma=modern&feature=ecmaModern%2CuseVersionSwitch%2CuseNewQuoteTabColor&intl=tw&lang=zh-Hant-TW&partner=none&prid=a3olkn1h90moe&region=TW&site=finance&tz=Asia%2FTaipei&ver=1.2.1295&returnMeta=true')
     jd = res.json()['data']
     close = jd[0]['chart']['indicators']['quote'][0]['close']
@@ -193,154 +185,169 @@ def timely_stock(request):
                 )
     fig3.update_layout(title_text='委賣', title_x=0.5)
     #newfig+="<div id='five'>"+"<div>"+fig2.to_html()+"</div>"+"<div>"+fig3.to_html()+"</div>"+"</div>"
-    try:
-        res = requests.get("https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_"+targets+".tw&json=1&delay=0&_=1552123547443")
-        data2 = res.json()['msgArray']
-        # 過濾出有用到的欄位
-        columns = ['c','n','z','tv','v','o','h','l','y']
-        gh = pandas.DataFrame(data2, columns=columns)
-        gh.columns = ['股票代號','公司簡稱','當盤成交價','當盤成交量','累積成交量','開盤價','最高價','最低價','昨收價']
-        gh.insert(9, "漲跌百分比", 0.0) 
-        # 新增漲跌百分比
-        if gh['當盤成交價'].iloc[0] != "-":
-            gh.iloc[0, [2,8]] = gh.iloc[0, [2,8]].astype(float)
-            gh['漲跌百分比'].iloc[0] = (gh['當盤成交價'].iloc[0] - gh['昨收價'].iloc[0])/gh['昨收價'].iloc[0] * 100
-           
-        #三大法人
-        ef = pd.DataFrame()
-        today = datetime.date.today()
-        strToday=str(today)
-        day = strToday[:4]+strToday[5:7]+strToday[8:]
-        
-        while True:
-            url = 'https://www.twse.com.tw/fund/T86?response=json&date=' + day + '&selectType=ALL'
-            res = requests.get(url)
-            inv_json = res.json()
-            if res.json()['stat'] == '很抱歉，沒有符合條件的資料!':
-                end_time= str(today-datetime.timedelta(days=1))
-                day= end_time[:4]+end_time[5:7]+end_time[8:]
-            elif res.json()['stat'] == 'OK':
-                ef_inv = pd.DataFrame.from_dict(inv_json['data'])
-                ef_inv.insert(0, '日期', datetime.datetime(int(day[:4]), int(day[4:6]), int(day[6:])))
-                ef = ef.append(ef_inv, ignore_index = True)
-                break
-        ef.columns = ['日期', '證券代號', '證券名稱', '外陸資買進股數(不含外資自營商)', '外陸資賣出股數(不含外資自營商)', '外陸資買賣超股數(不含外資自營商)', '外資自營商買進股數', '外資自營商賣出股數', '外資自營商買賣超股數', '投信買進股數', '投信賣出股數', '投信買賣超股數', '自營商買賣超股數', '自營商買進股數(自行買賣)', '自營商賣出股數(自行買賣)', '自營商買賣超股數(自行買賣)', '自營商買進股數(避險)', '自營商賣出股數(避險)', '自營商買賣超股數(避險)', '三大法人買賣超股數']
-        ef=ef.drop(columns= ['外陸資買進股數(不含外資自營商)', '外陸資賣出股數(不含外資自營商)', '外資自營商買進股數', '外資自營商賣出股數', '外資自營商買賣超股數', '投信買進股數', '投信賣出股數', '自營商買進股數(自行買賣)', '自營商賣出股數(自行買賣)', '自營商買賣超股數(自行買賣)', '自營商買進股數(避險)', '自營商賣出股數(避險)', '自營商買賣超股數(避險)', '三大法人買賣超股數'])
-        
-        # 加入股票代碼篩選
-        if targets == None:
-            pass
-        else:
-            ef = ef[ef['證券代號'] == str(targets)]
-        
-        
-        for col in range(3, 6):
-            for row in range(ef.shape[0]):
-                    ef.iloc[row, col] = float(ef.iloc[row,col].replace(',', ''))
-                    ef.iloc[row, col] = round(math.floor(ef.iloc[row,col])/1000)
-        
-            newfig="<div id='five'>"+"<div>"+fig.to_html()+"</div>"+"<div>"+fig2.to_html()+"</div>"+"<div>"+fig3.to_html()+"</div>"+"</div>"+"<div>"+ef.to_html(index=False)+"</div>"       
-    except:
-        ef='no1'
-        newfig="<div id='five'>"+"<div>"+fig.to_html()+"</div>"+"<div>"+fig2.to_html()+"</div>"+"<div>"+fig3.to_html()+"</div>"+"</div>"+"<div>"+ef+"</div>"   
-    try:
-        headers = {
-          'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'  
-        }
-        
-        res3 = requests.get('https://goodinfo.tw/tw/StockDirectorSharehold.asp?STOCK_ID='+targets+'', headers = headers)
-        
-        res3.encoding = 'utf-8'
-        
-        soup = BeautifulSoup(res3.text, 'lxml')
-        data3 = soup.select_one('#divDetail')
-        dfs = pandas.read_html(data3.prettify())
-        
-        dfs = dfs[0]
-        dfs.columns = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','董監持股比例(%)','18','19','20','外資持股比例(%)']
-        
-        
-        dfs2 =  dfs.drop(['2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','18','19','20'],axis = 1)
-        #print(dfs2)
-        
-        gh.insert(10, '董監持股比例(%)', dfs2['董監持股比例(%)'][1]) 
-        gh.insert(11, '外資持股比例(%)', dfs2['外資持股比例(%)'][1]) 
-        newfig+="<div id='redORgreen'>"+gh.to_html(index=False)+"</div>"
-    except:
-        gh='no2'
-        newfig+="<div>"+gh+"</div>"
-
-    try:
-        output_dir = './model_save1/'
-        
-        os.chdir(r'C:\Users\sleep\Desktop') 
-        
-        model =TFBertForSequenceClassification.from_pretrained(output_dir )
-        tokenizer = BertTokenizer.from_pretrained(output_dir)
-        
-        
-        stock_code=targets
-        
-        #print(code)
-        #print(code_1)
-        #print(stock)
-        
-        #主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式
-         # 要抓取的網址
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
-        url="https://tw.stock.yahoo.com/quote/"+stock_code+"/news"
-        #print(url)
-        
-          #請求網站
-        list_req = requests.get(url, headers=headers)
-          #將整個網站的程式碼爬下來
-        soup = BeautifulSoup(list_req.content, "html.parser")
-          #找到b這個標籤
+    
+    
+    res = requests.get("https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_"+targets+".tw&json=1&delay=0&_=1552123547443")
+    data2 = res.json()['msgArray']
+    # 過濾出有用到的欄位
+    columns = ['c','n','z','tv','v','o','h','l','y']
+    gh = pandas.DataFrame(data2, columns=columns)
+    gh.columns = ['股票代號','公司簡稱','當盤成交價','當盤成交量','累積成交量','開盤價','最高價','最低價','昨收價']
+    gh.insert(9, "漲跌百分比", 0.0) 
+    # 新增漲跌百分比
+    if gh['當盤成交價'].iloc[0] != "-":
+        gh.iloc[0, [2,8]] = gh.iloc[0, [2,8]].astype(float)
+        gh['漲跌百分比'].iloc[0] = (gh['當盤成交價'].iloc[0] - gh['昨收價'].iloc[0])/gh['昨收價'].iloc[0] * 100
+       
+    #三大法人
+    ef = pd.DataFrame()
+    today = datetime.date.today()
+    strToday=str(today)
+    day = strToday[:4]+strToday[5:7]+strToday[8:]
+    
+    while True:
+        url = 'https://www.twse.com.tw/fund/T86?response=json&date=' + day + '&selectType=ALL'
+        res = requests.get(url)
+        inv_json = res.json()
+        if res.json()['stat'] == '很抱歉，沒有符合條件的資料!':
+            end_time= str(today-datetime.timedelta(days=1))
+            day= end_time[:4]+end_time[5:7]+end_time[8:]
+        elif res.json()['stat'] == 'OK':
+            ef_inv = pd.DataFrame.from_dict(inv_json['data'])
+            ef_inv.insert(0, '日期', datetime.datetime(int(day[:4]), int(day[4:6]), int(day[6:])))
+            ef = ef.append(ef_inv, ignore_index = True)
+            break
+    ef.columns = ['日期', '證券代號', '證券名稱', '外陸資買進股數(不含外資自營商)', '外陸資賣出股數(不含外資自營商)', '外陸資買賣超股數(不含外資自營商)', '外資自營商買進股數', '外資自營商賣出股數', '外資自營商買賣超股數', '投信買進股數', '投信賣出股數', '投信買賣超股數', '自營商買賣超股數', '自營商買進股數(自行買賣)', '自營商賣出股數(自行買賣)', '自營商買賣超股數(自行買賣)', '自營商買進股數(避險)', '自營商賣出股數(避險)', '自營商買賣超股數(避險)', '三大法人買賣超股數']
+    ef=ef.drop(columns= ['外陸資買進股數(不含外資自營商)', '外陸資賣出股數(不含外資自營商)', '外資自營商買進股數', '外資自營商賣出股數', '外資自營商買賣超股數', '投信買進股數', '投信賣出股數', '自營商買進股數(自行買賣)', '自營商賣出股數(自行買賣)', '自營商買賣超股數(自行買賣)', '自營商買進股數(避險)', '自營商賣出股數(避險)', '自營商買賣超股數(避險)', '三大法人買賣超股數'])
+    
+    # 加入股票代碼篩選
+    if targets == None:
+        pass
+    else:
+        ef = ef[ef['證券代號'] == str(targets)]
+    
+    
+    for col in range(3, 6):
+        for row in range(ef.shape[0]):
+                ef.iloc[row, col] = float(ef.iloc[row,col].replace(',', ''))
+                ef.iloc[row, col] = round(math.floor(ef.iloc[row,col])/1000)
+    
             
-        now =time.localtime()  #當日時間
-        now = str(now.tm_year)+'年'+str(now.tm_mon)+'月'+ str(now.tm_mday)+'日' 
-        num=now.find('日')
-        for a in soup.find_all('h3',{'class':'Mt(0) Mb(8px)'},limit=5):
-              if stock_name in a.text:#中文代碼
-                url = a.a.get('href')
-                list_req = requests.get(url)
-                soup1 = BeautifulSoup(list_req.content, "html.parser")
-                getAllNew= soup1.find('div',{'class':'caas-body'}) 
-                gettime= soup1.find('time',{'class':'caas-attr-meta-time'})
-                
-        response = requests.get("https://tw.stock.yahoo.com/quote/"+stock_code+"/news")
-        soup = BeautifulSoup(response.text, "html.parser")            
-        b=0
-        newData=[]
+    headers = {
+      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'  
+    }
+    
+    res3 = requests.get('https://goodinfo.tw/tw/StockDirectorSharehold.asp?STOCK_ID='+targets+'', headers = headers)
+    
+    res3.encoding = 'utf-8'
+    
+    soup = BeautifulSoup(res3.text, 'lxml')
+    data3 = soup.select_one('#divDetail')
+    dfs = pandas.read_html(data3.prettify())
+    
+    dfs = dfs[0]
+    dfs.columns = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','董監持股比例(%)','18','19','20','外資持股比例(%)']
+    
+    
+    dfs2 =  dfs.drop(['2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','18','19','20'],axis = 1)
+    #print(dfs2)
+    
+    gh.insert(10, '董監持股比例(%)', dfs2['董監持股比例(%)'][1]) 
+    gh.insert(11, '外資持股比例(%)', dfs2['外資持股比例(%)'][1]) 
+    
+    
+    newfig="<div id='five'>"+"<div>"+fig.to_html()+"</div>"+"<div>"+fig2.to_html()+"</div>"+"<div>"+fig3.to_html()+"</div>"+"</div>"+"<div>"+gh.to_html(index=False)+"</div>"+"<div>"+ef.to_html(index=False)+"</div>"
+    output_dir = './model_save1/'
+    
+    os.chdir(r'C:\Users\sleep\Desktop') 
+    
+    model =TFBertForSequenceClassification.from_pretrained(output_dir )
+    tokenizer = BertTokenizer.from_pretrained(output_dir)
+    
+    
+    res = requests.get("http://isin.twse.com.tw/isin/C_public.jsp?strMode=2")
+    
+    
+    
+    df = pandas.read_html(res.text)[0]
+    #print(df[0])
+    
+    stock_code=targets
+    code = []  #數字代碼
+    for i in range(2,len(df)):
+        if df[5][i] =='ESVUFR':
+            code.append(df[0][i][0:4])
+        #print(df[0][i][0:4])
         
-        for a in soup.find_all('h3',{'class':'Mt(0) Mb(8px)'}):
-            if stock_name in a.text:
-                #print(a.a.get('href'))
-                #print(a.text)
-                url = a.a.get('href')
-                list_req = requests.get(url)
-                soup1 = BeautifulSoup(list_req.content, "html.parser")
-                getAllNew= soup1.find('div',{'class':'caas-body'}) 
-                gettime= soup1.find('time',{'class':'caas-attr-meta-time'}) #抓日期
-                #print(getAllNew.text+'\n')
-                #f.write(a.text+'\n')             #標題
-                newData.append([a.text,gettime.get_text('datetime')[0:10],getAllNew.text,(url)])  
-                b+=1
-                if b>=5:
-                    break
-        for f in range(5):
-            pre_text= [newData[f][2]]
-            tf_batch = tokenizer(pre_text[0][11:], max_length=128, padding=True, truncation=True, return_tensors='tf')
-            tf_outputs = model(tf_batch)
-            tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
-            labels = ['5','4','3','2','1']  #5最好 1最差
-            label = tf.argmax(tf_predictions, axis=1)
-            label = label.numpy()
-            for i in range(5):
-                newData[f].append(labels[label[i]])
+    code_1 = []  #中文名稱
+    for i in range(2,len(df)):
+        if df[5][i] =='ESVUFR':
+            code_1.append(df[0][i][5:])
+        #print(df[0][i][0:4])
+    stock=[]
+    for i in range(1,len(code)):
+        if stock_code == code[i]:
+            stock.append(stock_code)
+            stock.append(code_1[i]) 
+    #print(code)
+    #print(code_1)
+    #print(stock)
+    
+    #主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式
+     # 要抓取的網址
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
+    url="https://tw.stock.yahoo.com/quote/"+stock_code+"/news"
+    #print(url)
+    
+      #請求網站
+    list_req = requests.get(url, headers=headers)
+      #將整個網站的程式碼爬下來
+    soup = BeautifulSoup(list_req.content, "html.parser")
+      #找到b這個標籤
+        
+    now =time.localtime()  #當日時間
+    now = str(now.tm_year)+'年'+str(now.tm_mon)+'月'+ str(now.tm_mday)+'日' 
+    num=now.find('日')
+    for a in soup.find_all('h3',{'class':'Mt(0) Mb(8px)'},limit=5):
+          if stock[1] in a.text:#中文代碼
+            url = a.a.get('href')
+            list_req = requests.get(url)
+            soup1 = BeautifulSoup(list_req.content, "html.parser")
+            getAllNew= soup1.find('div',{'class':'caas-body'}) 
+            gettime= soup1.find('time',{'class':'caas-attr-meta-time'})
+            
+    response = requests.get("https://tw.stock.yahoo.com/quote/"+stock_code+"/news")
+    soup = BeautifulSoup(response.text, "html.parser")            
+    stock_name=stock[1]
+    b=0
+    newData=[]
+    
+    for a in soup.find_all('h3',{'class':'Mt(0) Mb(8px)'}):
+        if stock_name in a.text:
+            #print(a.a.get('href'))
+            #print(a.text)
+            url = a.a.get('href')
+            list_req = requests.get(url)
+            soup1 = BeautifulSoup(list_req.content, "html.parser")
+            getAllNew= soup1.find('div',{'class':'caas-body'}) 
+            gettime= soup1.find('time',{'class':'caas-attr-meta-time'}) #抓日期
+            #print(getAllNew.text+'\n')
+            #f.write(a.text+'\n')             #標題
+            newData.append([a.text,gettime.get_text('datetime')[0:10],getAllNew.text,(url)])  
+            b+=1
+            if b>=5:
                 break
-    except:
-        newData='no3'
+    for f in range(5):
+        pre_text= [newData[f][2]]
+        tf_batch = tokenizer(pre_text[0][11:], max_length=128, padding=True, truncation=True, return_tensors='tf')
+        tf_outputs = model(tf_batch)
+        tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
+        labels = ['5','4','3','2','1']  #5最好 1最差
+        label = tf.argmax(tf_predictions, axis=1)
+        label = label.numpy()
+        for i in range(5):
+            newData[f].append(labels[label[i]])
+            break
     return render(request,'choose/asd.html',{'newfig':newfig,'newData':newData})#,content_type='html',content_type='text'
 
 def choose2(request):
@@ -348,21 +355,12 @@ def choose2(request):
 def choose2_submit(request):
     start_time = request.GET["start_time"]
     end_time = request.GET["end_time"]
-    get_text = request.GET["stock"]
+    stock=request.session['stock']
+    stock_name = stock+'.TW'
     start = start_time
     end = end_time
-    with open('test3.json',encoding="utf_8") as f:
-            data = json.load(f)
-    for i in range(len(data)-1):
-        if get_text == data[i]['name']:
-            targets=data[i]['stock']
-            title_text=targets+' '+get_text+' '+start_time+'~'+end_time
-        elif get_text ==data[i]['stock']:
-            targets=get_text
-            stock_name=data[i]['name']
-            title_text=targets+' '+stock_name+' '+start_time+'~'+end_time
-    stock_name = targets+'.TW'
     
+    title=start_time+'~'+end_time
     # 下載股價資訊
     try:
         df_full = pdr.get_data_yahoo(stock_name, start=start, end=end).reset_index()
@@ -442,4 +440,4 @@ def choose2_submit(request):
     
     fig.update_layout(xaxis_rangeslider_visible=False)
     div = opy.plot(fig, auto_open=False, output_type='div')
-    return render(request,'choose/choose2.html',{'who':efgh(),'title':title_text,'fig':div})
+    return render(request,'choose/choose2.html',{'who':efgh(),'stock':stock,'title':title,'fig':div})

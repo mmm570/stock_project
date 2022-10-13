@@ -29,16 +29,16 @@
 	</div>
 	<div id="main">
 		<div id='choose2'>
-			<div id='choose_div'>
-			   	<form id="choose2" action="choose2_submit" method="get">
-			   		{{ who.as_p }}
-		   			<input id='submit'type="submit" value="送出">
-		   		</form>
-		   	</div>
 			<p><a href="{%url 'choose:choose' %}">即時股價</a></p>
-			<p id='transaction2_btn'>技術線圖</p>
+			<p id='transaction2_btn'>死亡交叉</p>
 		</div>
-		
+		<div>
+			<p>{{stock}}</p>
+			<form id="choose2" action="choose2_submit" method="get">
+		   		{{ who.as_p }}
+		   		<input id='submit'type="submit" value="送出">
+		   	</form>
+	   	</div>
 	   	<div id='choose_div' >
 	   	    <p style="width: fit-content;">{{title}}</p>
 	   		{% autoescape off %}
@@ -46,12 +46,5 @@
 		    {% endautoescape %}
    		</div>
    	</div>
-   	<div id='qr_div' >
-		<div id="qr_code">
-			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
-			<img src="/static/stock/img/906csrwq.png" alt="">
-		</div>
-		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
-	</div>
 </body>
 </html>
