@@ -18,22 +18,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-DEBUG = True
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-c6&07jf#9!s7zhwgu!q-oen&88wl&k*i^=zj2@tx)eaxbx*-_m'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 import os
-# SECURITY WARNING: don't run with debug turned on in production!
-IS_HEROKU = "DYNO" in os.environ
-# Generally avoid wildcards(*). However since Heroku router provides hostname validation it is ok
-if IS_HEROKU:
-    ALLOWED_HOSTS = ["*"]
-else:
-    ALLOWED_HOSTS = []
+if 'DYNO' in os.environ:    # Running on Heroku
+    DEBUG = False
 
-# SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU:
-    DEBUG = True
-
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -63,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 ROOT_URLCONF = 'stock_project.urls'
@@ -141,7 +135,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_ROOT = 'staticfiles'
+
 STATIC_URL = '/static/'
 
 
@@ -151,5 +145,4 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # For Heroku deployment
-
-
+STATIC_ROOT = 'staticfiles'
