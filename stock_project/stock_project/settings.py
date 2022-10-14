@@ -21,14 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-c6&07jf#9!s7zhwgu!q-oen&88wl&k*i^=zj2@tx)eaxbx*-_m'
+import os
+# SECURITY WARNING: don't run with debug turned on in production!
+IS_HEROKU = "DYNO" in os.environ
+# Generally avoid wildcards(*). However since Heroku router provides hostname validation it is ok
+if IS_HEROKU:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = []
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-import os
-if 'DYNO' in os.environ:    # Running on Heroku
-    DEBUG = False
+if not IS_HEROKU:
+    DEBUG = True
 
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
