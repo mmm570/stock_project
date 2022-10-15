@@ -5,14 +5,14 @@ from django.contrib import messages
 import twstock
 from django.core.paginator import Paginator #分頁
 import json
-
+import psycopg2
 
 db_settings = {
-"host": "127.0.0.1",
-"port": 3306,
-"user": "root",
-"password": "admin",
-"db": "stock",
+"host": "ec2-34-194-40-194.compute-1.amazonaws.com",
+"port": 5432,
+"user": "bndihaosnyazzm",
+"password": "081ce62191f7f1ee6a44ab70519e850155b43186aea8d5a4a45b7861343e74a3",
+"database": "d4629th1m6sm7h",
 "charset": "utf8"
 }
 
@@ -30,7 +30,7 @@ def login_register(request):
         if 'login' in request.POST:
             idVal = request.POST["id"]
             passwordVal = request.POST["password"]
-            conn = pymysql.connect(**db_settings)
+            conn = psycopg2.connect(**db_settings)
             with conn.cursor() as cursor:
                 # 查詢資料SQL語法
                 command = "SELECT * FROM stock.charts where id=%s "
@@ -54,7 +54,7 @@ def login_register(request):
         else:
             idVal = request.POST["id"]
             passwordVal = request.POST["password"]
-            conn = pymysql.connect(**db_settings)
+            conn = psycopg2.connect(**db_settings)
             try:
                 with conn.cursor() as cursor:
                     command = "INSERT INTO charts(id,password,allmoney,stockmoney)VALUES(%s, %s, 999999999,0)"
@@ -101,7 +101,7 @@ def clickbuy1(request):#查詢
     return render(request, 'transaction/btn1Create.html',{'who':sent(),'stock_num':newform,'result':title_text,'result_price':all_price,'id':request.session['saveid']})
 def buy_sell(request):#查詢   
     try:    
-        conn = pymysql.connect(**db_settings)
+        conn = psycopg2.connect(**db_settings)
         get_text = request.GET["stock_id1"]
         with open('test3.json',encoding="utf_8") as f:
                 data = json.load(f)
@@ -179,7 +179,7 @@ def buy_sell(request):#查詢
                     buy_sell_result=("已買進  "+title_text+"  價格為:"+stock_price+'  '+buy_sell_count+'張') #顯示買了甚麼
         #買進的底
         if choose_buy_sell == 'sell' :                                  #賣出
-            conn = pymysql.connect(**db_settings)
+            conn = psycopg2.connect(**db_settings)
             with conn.cursor() as cursor:
                 command = "SELECT stockmoney1 FROM stock.stock where (stock_id=%s)and(stockmoney1=%s)"
                 cursor.execute(command,(saveid,stockid))
@@ -188,7 +188,7 @@ def buy_sell(request):#查詢
                 buy_sell_result=('您並未擁有'+title_text+'股票')
             else:
                 if result[0] == stockid:
-                    conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                    conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                     with conn.cursor() as cursor: 
                         command = "SELECT sum(stockmoney3) FROM stock.stock GROUP BY (stock_id=%s)and(stockmoney1=%s)" 
                         cursor.execute(command,(saveid,stockid))
@@ -196,7 +196,7 @@ def buy_sell(request):#查詢
                         conn.commit()    
                         conn.close()   
                     if int(buy_sell_count)<=int(result5[-1][0]):#如果賣出的張數<=庫存張數
-                        conn = pymysql.connect(**db_settings)                    
+                        conn = psycopg2.connect(**db_settings)                    
                         with conn.cursor() as cursor: 
                         
                             command = "SELECT stockmoney1,stockmoney2,stockmoney3 FROM stock.stock where (stock_id=%s)and(stockmoney1=%s)"
@@ -211,7 +211,7 @@ def buy_sell(request):#查詢
         
         
                         #抓原本資產 加上賺的 刪原本的股票 新增剩餘的股票
-                        conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                        conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                         with conn.cursor() as cursor: 
                             command = "SELECT allmoney FROM stock.charts WHERE id = %s"#原本資產
                             cursor.execute(command, (saveid))
@@ -219,7 +219,7 @@ def buy_sell(request):#查詢
                         conn.commit()    
                         conn.close()       
                         result4=int(result3[0])
-                        conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                        conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                         with conn.cursor() as cursor: 
                             command = "UPDATE charts SET allmoney = %s WHERE id = %s"#加上賺的
                             result4 += int(stock_price)*int(buy_sell_count)*1000
@@ -227,14 +227,14 @@ def buy_sell(request):#查詢
                         conn.commit()
                         conn.close()  
                         if int(result5[-1][0])-int(buy_sell_count)==0:
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor: 
                                 command = "DELETE FROM stock.stock WHERE (stock_id=%s)and(stockmoney1=%s)"
                                 cursor.execute(command, (saveid,stockid))
                             conn.commit()    
                             conn.close()    
                             
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 command = "SELECT * FROM stock.record " #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -246,7 +246,7 @@ def buy_sell(request):#查詢
                             else:
                                 id1=result[-1][0]+1
                                 
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 command = "insert into stock.record(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell) values(%s,%s,%s,%s,%s,now(),'賣出')"
                                 cursor.execute(command, (id1,stockid,stock_price,buy_sell_count, saveid))
@@ -256,7 +256,7 @@ def buy_sell(request):#查詢
                             #------
         
                             id2=0
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 command = "SELECT buy_sell_1 FROM stock.record_1 ORDER BY buy_sell_1 DESC" #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -269,7 +269,7 @@ def buy_sell(request):#查詢
                             else:
                                 id2=result1[0][0]+1
                                 
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:    
                                 
                                 command = "SELECT * FROM stock.record_1 " #抓取資料庫資料行數
@@ -282,7 +282,7 @@ def buy_sell(request):#查詢
                             else:
                                 id1=result[-1][0]+1
                             #------
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:  
                                 command = "insert into stock.record_1(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell,buy_sell_1) values(%s,%s,%s,%s,%s,now(),'賣出',%s)"
                                 cursor.execute(command, (id1,stockid,stock_price,buy_sell_count,saveid,id2))
@@ -291,14 +291,14 @@ def buy_sell(request):#查詢
         
                         if int(result5[-1][0])-int(buy_sell_count)>0:
                             mon= int(result5[-1][0])-int(buy_sell_count)
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor: 
                                 command = "DELETE FROM stock WHERE (stock_id=%s)and(stockmoney1=%s)"
                                 cursor.execute(command, (saveid,stockid))
                             conn.commit()    
                             conn.close()      
                             
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 command = "SELECT * FROM stock.record " #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -310,7 +310,7 @@ def buy_sell(request):#查詢
                                 id1=1
                             else:
                                 id1=result[-1][0]+1
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 
                                 command = "insert into stock.record(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell) values(%s,%s,%s,%s,%s,now(),'賣出')"
@@ -318,7 +318,7 @@ def buy_sell(request):#查詢
                             conn.commit()    
                             conn.close() 
                             
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 
                                 command = "SELECT * FROM stock.record_1 " #抓取資料庫資料行數
@@ -333,7 +333,7 @@ def buy_sell(request):#查詢
                                 id1=result[-1][0]+1
         
                             id2=0
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:
                                 
                                 command = "SELECT buy_sell_1 FROM stock.record_1 ORDER BY buy_sell_1 DESC" #抓取資料庫資料行數
@@ -347,7 +347,7 @@ def buy_sell(request):#查詢
                             else:
                                 id2=result1[0][0]+1
                                 
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor:     
                                 command = "SELECT * FROM stock.record_1 " #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -360,7 +360,7 @@ def buy_sell(request):#查詢
                             else:
                                 id1=result[-1][0]+1
                             #------
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor: 
                                 command = "insert into stock.record_1(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell,buy_sell_1) values(%s,%s,%s,%s,%s,now(),'賣出',%s)"
                                 cursor.execute(command, (id1,stockid,stock_price,buy_sell_count,saveid,id2))
@@ -368,7 +368,7 @@ def buy_sell(request):#查詢
                             conn.commit()
                             conn.close()  
                             
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor: 
                                 command = "SELECT * FROM stock.stock " #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -381,7 +381,7 @@ def buy_sell(request):#查詢
                             else:
                                 id1=result[-1][0]+1
         
-                            conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                            conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                             with conn.cursor() as cursor: 
                                 
                                 command = "insert into stock(id1,stockmoney1,stockmoney2,stockmoney3,stock_id) values(%s,%s,%s,%s,%s)"
@@ -397,7 +397,7 @@ def buy_sell(request):#查詢
         #--------------------------------------------------
                     a=''
                     s='已實現'
-                    conn = pymysql.connect(**db_settings)#conn.commit()    #conn.close()                     
+                    conn = psycopg2.connect(**db_settings)#conn.commit()    #conn.close()                     
                     with conn.cursor() as cursor:        
                         command = "SELECT * FROM stock.record_1 where stock_id=%s and stockmoney1=%s and buy_sell='賣出'"
                         cursor.execute(command,(saveid,stockid))
@@ -409,7 +409,7 @@ def buy_sell(request):#查詢
                     print(result1)
                     print("-------------------------") 
                     
-                    conn = pymysql.connect(**db_settings)
+                    conn = psycopg2.connect(**db_settings)
                     with conn.cursor() as cursor:    
                         command = "SELECT * FROM stock.record_1 where stock_id=%s and stockmoney1=%s and buy_sell='買進'"
                         cursor.execute(command,(saveid,stockid))
@@ -419,7 +419,7 @@ def buy_sell(request):#查詢
                         print(result2)#找資料庫record_1買進的有多少列
                         print('\n')
                         print("-------------------------") 
-                    conn = pymysql.connect(**db_settings)
+                    conn = psycopg2.connect(**db_settings)
                     with conn.cursor() as cursor:   
                         command = "SELECT * FROM stock.record_1 where stock_id=%s and stockmoney1=%s"
                         cursor.execute(command,(saveid,stockid))
@@ -431,7 +431,7 @@ def buy_sell(request):#查詢
                         
                     for i in range(0,len(result2)):
                         id2=0
-                        conn = pymysql.connect(**db_settings)
+                        conn = psycopg2.connect(**db_settings)
                         with conn.cursor() as cursor:
                             command = "SELECT buy_sell_1 FROM stock.record_1 ORDER BY buy_sell_1 DESC" #抓取資料庫資料行數
                             cursor.execute(command)
@@ -442,14 +442,14 @@ def buy_sell(request):#查詢
                         conn.close()
                         print("result2[i][3]",str(result2[i][3]),"A",str(a))
                         if result2[i][3] > a:
-                            conn = pymysql.connect(**db_settings)
+                            conn = psycopg2.connect(**db_settings)
                             with conn.cursor() as cursor:
                                 command = "update stock.record_1 set stockmoney3=(%s - %s) where id1 =%s"
                                 cursor.execute(command,(result2[i][3],a,result2[i][0],))
             
                             conn.commit()                  
                             conn.close()
-                            conn = pymysql.connect(**db_settings)
+                            conn = psycopg2.connect(**db_settings)
                             with conn.cursor() as cursor:
                                 command = "insert into record_1 values(%s,%s,%s,%s,%s,%s,%s,%s)"
                                 cursor.execute(command,((result5[-1][0]+1),result2[i][1],result2[i][2],a,result2[i][4],result2[i][5],s,id2))
@@ -457,13 +457,13 @@ def buy_sell(request):#查詢
                             conn.close()
                             break
                         if result2[i][3] == a:
-                            conn = pymysql.connect(**db_settings)
+                            conn = psycopg2.connect(**db_settings)
                             with conn.cursor() as cursor:
                                 command = "update stock.record_1 set buy_sell=%s  where id1 =%s"
                                 cursor.execute(command,(s,result2[i][0],))
                             conn.commit()
                             conn.close()
-                            conn = pymysql.connect(**db_settings)
+                            conn = psycopg2.connect(**db_settings)
                             with conn.cursor() as cursor:
                                 command = "update stock.record_1 set buy_sell_1=%s  where id1 =%s"
                                 cursor.execute(command,(id2,result2[i][0],))
@@ -472,13 +472,13 @@ def buy_sell(request):#查詢
             
                             break
                         if result2[i][3] <a:
-                            conn = pymysql.connect(**db_settings)
+                            conn = psycopg2.connect(**db_settings)
                             with conn.cursor() as cursor:
                                 command = "update stock.record_1 set buy_sell=%s where id1 =%s"
                                 cursor.execute(command,(s,result2[i][0],))
                             conn.commit()
                             conn.close()
-                            conn = pymysql.connect(**db_settings)
+                            conn = psycopg2.connect(**db_settings)
                             with conn.cursor() as cursor:
             
                                 command = "update stock.record_1 set buy_sell_1=%s  where id1 =%s"
@@ -495,7 +495,7 @@ def buy_sell(request):#查詢
     return render(request, 'transaction/btn1Create.html',{'who':sent(),'stock_num':clickbuy(),'buy_sell_result':buy_sell_result,'id':request.session['saveid']})
 def btn2Create(request):
     saveid=request.session['saveid']
-    conn = pymysql.connect(**db_settings)
+    conn = psycopg2.connect(**db_settings)
     with conn.cursor() as cursor:
         command = "SELECT stockmoney1  FROM stock.stock where stock_id=%s group by stockmoney1"
         cursor.execute(command,(saveid))
@@ -565,7 +565,7 @@ def btn2Create(request):
     return render(request, 'transaction/btn2Create.html',{'result123':result123,'result_money':result_money,'result_stock':result_stock,'result_result':result_result,'result456':result456,'result_end':result_end,'id':request.session['saveid']})
 def btn3Create(request):
     saveid=request.session['saveid']
-    conn = pymysql.connect(**db_settings)
+    conn = psycopg2.connect(**db_settings)
     with conn.cursor() as cursor:
         command = "SELECT * FROM record where stock_id=%s order by date1 desc" 
         cursor.execute(command,(saveid))
@@ -589,7 +589,7 @@ def btn3Create(request):
     return render(request, 'transaction/btn3Create.html',{'page':page,'id':request.session['saveid']})
 def btn4Create(request):
     saveid=request.session['saveid']
-    conn = pymysql.connect(**db_settings)
+    conn = psycopg2.connect(**db_settings)
     with conn.cursor() as cursor:
         command = "SELECT stockmoney1 ,(sum(stockmoney2*stockmoney3))/sum(stockmoney3),sum(stockmoney3) FROM stock where stock_id=%s GROUP BY stockmoney1 " 
         cursor.execute(command,(saveid))
@@ -615,7 +615,7 @@ def btn4Create(request):
     return render(request, 'transaction/btn4Create.html',{'text3':text3,'id':saveid})
 def btn5Create(request):
     saveid=request.session['saveid']
-    conn = pymysql.connect(**db_settings)
+    conn = psycopg2.connect(**db_settings)
     with conn.cursor() as cursor:
         command = "SELECT stockmoney1 ,(sum(stockmoney2*stockmoney3))/sum(stockmoney3),sum(stockmoney3) FROM stock where stock_id=%s GROUP BY stockmoney1 " 
         cursor.execute(command,(saveid))
