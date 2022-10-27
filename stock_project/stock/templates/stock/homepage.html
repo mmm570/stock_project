@@ -5,30 +5,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首頁</title>
-    <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
-    
+    <link rel="stylesheet" href="{% static 'stock/css/new.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 </head>
 <body>
-    <div class="top">
-		<header>
-            <div><img src="/static/stock/img/logo.png" alt="logo"></div>
-			<p>朝陽虛擬智選股</p>
-		</header>
-		<nav>
-			<ul class="nav">
-				<li  id="foo" >首頁</li>
-				<li><a href="{% url 'markettrend:markettrend' %}">大盤走勢</a></li>
-				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
-				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
-				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
-				<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
-				<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
-				<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
-			</ul>
-		</nav>
+	<div id='homepage'  data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+		 <div class="home_top">
+			<header  data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine">
+				<p>朝陽虛擬智選股</p>
+				<div><img src="/static/stock/img/logo.png" alt="logo"></div>
+			</header>
+			<nav>
+				<ul class="nav"  data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
+					<li  id="foo" >首頁</li>
+					<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
+					<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
+					<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
+					<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
+					<li><a href="{% url 'transaction:transaction' %}">虛擬交易</a></li>
+					<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
+				</ul>
+			</nav>
+		</div>
+		<div id='home'>
+			<div id='left_font'>
+				<p data-aos="fade-right">朝陽</p>
+				<p data-aos="flip-up"><span>虛擬智選股</span></p>
+				<h5 data-aos="zoom-out">虛擬股票分析與交易平台建置</h5>
+			</div>
+			<div id='angles'>
+				<div id='six-angle1'></div>
+				<div id='six-angle2'></div>
+				<div id='six-angle3'></div>
+				<div id='six-angle4'></div>
+			</div>
+		</div>
 	</div>
-	<div id="main">
-		<div id="square">
+	<div id="main" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+		<div id='homepage_left'>
+			<table id='market_table'>
+				<thead>
+					<tr>
+						<th colspan="3">加權指數</th>
+						<th>成交金額(億)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					{% for i in stock_data %}
+						<td>{{i}}</td>
+					{% endfor %}
+					{% for i in stock_data_2 %}
+						<td>{{i}}</td>
+					{% endfor %}
+					</tr>
+				</tbody>
+			</table>
+			{% autoescape off %}
+				{{fig}}
+			{% endautoescape %}
+			<div id='hot'>
+				<table>
+					<thead>
+						<tr>
+							<th>名次</th>
+							<th>股票名稱/代碼</th>
+							<th>股價</th>
+							<th>漲跌</th>
+							<th>漲跌幅</th>
+							<th>成交量</th>
+							<th>成交金額</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for i in stock %}
+							<tr>
+								<td>{{forloop.counter}}</td>
+								<td>{{i.0}}</td>
+								<td>{{i.1}}</td>
+								<td>{{i.2}}</td>
+								<td>{{i.3}}</td>
+								<td>{{i.4}}</td>
+								<td>{{i.5}}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="homepage_right">
 			<div id="new">
 				<h1>熱門新聞</h1><br>
 				{%for i in d %}
@@ -43,15 +109,131 @@
 				{%endfor%}
 			</div>
 		</div>
-		<div id="home_bg"><img src="/static/stock/img/bg_img.png" alt=""></div>
-		<div id="circle">
-			<p>ＷElCOME<br><span>朝陽虛擬智選股</span></p>
+	</div>
+	<div id='qr_div'  data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine">
+		<div id="qr_code">
+			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
+			<img src="/static/stock/img/906csrwq.png" alt="">
 		</div>
+		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
+	</div>
+	<footer  data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+		<table   data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead>
+				<tr>
+					<th>開發團隊</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>指導老師	陳榮靜</td></tr>
+				<tr><td>10814056	柯沛淳</td></tr>
+				<tr><td>10814071	溫聖倫</td></tr>
+				<tr><td>10814090	林廷逸</td></tr>
+				<tr><td>10814092	游凱翔</td></tr>
+				<tr><td>10814137	方佳琪</td></tr>
+				<tr><td>10814160	伍慶翎</td></tr>			
+			</tbody>
+		</table>
+		<table   data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead> 
+				<tr>
+					<th>系統環境</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>MySQL</td></tr>
+				<tr><td>Python</td></tr>
+				<tr><td>Django</td></tr>
+				<tr><td>Excel</td></tr>
+				<tr><td>HTML5</td></tr>
+				<tr><td>CSS</td></tr>
+				<tr><td>Bootstrap</td></tr>
+				<tr><td>JavaScript</td></tr>
+				<tr><td>jQuery</td></tr>
+				<tr><td>AJAX</td></tr>
+			</tbody>
+		</table>
+		<table  data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead>
+				<tr>
+					<th>資料來源</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><a href='https://tw.stock.yahoo.com/' target="_blank">Yahoo股市</a></td></tr>
+				<tr><td><a href='https://goodinfo.tw/tw/index.asp' target="_blank">Goodinfo</a></td></tr>
+				<tr><td><a href='https://www.twse.com.tw/zh/' target="_blank">台灣證券交易所</a></td></tr>
+				<tr><td><a href='https://histock.tw/' target="_blank">histock</a></td></tr>
+			</tbody>
+		</table>
+		<table  data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead> 
+				<tr>
+					<th>主要應用</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>LSTM</td></tr>
+				<tr><td>BERT</td></tr>
+			</tbody>
+		</table>
+	</footer>
+	<script>
+		AOS.init({
+			duration:500,
+			once: false,  
+			delay: 100,
+		});
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+	<script src="{% static 'stock/js/all.js' %}" type="text/javascript"></script>
+	<script> 
+		var i=$('#market_table tbody tr td:eq(2)').text()
+		if (Number($('#market_table tbody tr td:eq(2)').text())>0){
+			   $('#market_table tbody tr td:eq(2)').attr('class','red');
+			   $('#market_table tbody tr td:eq(2)').append('%');
+		  }
+		else if(Number($('#market_table tbody tr td:eq(2)').text())<0){
+			$('#market_table tbody tr td:eq(2)').attr('class','green');
+			$('#market_table tbody tr td:eq(2)').append('%');
+			}
+		else if(Number($('#market_table tbody tr td:eq(2)').text())==0){
+			$('#market_table tbody tr td:eq(2)').attr('class','white');
+			$('#market_table tbody tr td:eq(2)').append('%');
+			}
 		
-	</div>
-	<div id="qr_code">
-		<p>line好友添加</p>
-		<img src="/static/stock/img/906csrwq.png" alt="">
-	</div>
+		var j=$('#market_table tbody tr td:eq(1)').text()
+		if (Number($('#market_table tbody tr td:eq(1)').text())>0){
+			   $('#market_table tbody tr td:eq(1)').attr('class','red');
+		  }
+		else if(Number($('#market_table tbody tr td:eq(1)').text())<0){
+			$('#market_table tbody tr td:eq(1)').attr('class','green');
+			}
+		else if(Number($('#market_table tbody tr td:eq(1)').text())==0){
+			$('#market_table tbody tr td:eq(1)').attr('class','white');
+			}
+		$('#hot  tbody tr td:nth-child(4)').each(function(){
+			if($(this).text()>0){
+				$(this).addClass("red");
+			}
+			else if($(this).text()<0){
+				$(this).addClass("green");
+			}
+			else{
+				$(this).addClass("white");
+			}
+		})
+		$('#hot  tbody tr td:nth-child(5)').each(function(){
+			if($(this).text().replace('%', '')>0){
+				$(this).addClass("red");
+			}
+			else if($(this).text().replace('%', '')<0){
+				$(this).addClass("green");
+			}
+			else{
+				$(this).addClass("white");
+			}
+		})
+	</script>
 </body>
 </html>

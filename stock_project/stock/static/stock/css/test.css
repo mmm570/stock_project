@@ -110,7 +110,7 @@ header p{
     line-height: 30px;
 }
 .nav li{
-    color: #3399CC;
+    color: #1C536E;
 	margin-left: 10px;
     height: 30px;
     width:90px;
@@ -131,13 +131,15 @@ header p{
     transform: scale(1.1) translateY(-5px);
 }
 .nav a:hover{
-    color: #3399CC;
+    color: #1C536E;
 }
 #main{
 	width: 1400px !important;
     height: max-content;
     margin:40px auto 60px;
     position:relative;
+    background:gary;
+    height:1000px;
 }
 table{
 	margin-top:20px;
@@ -149,55 +151,58 @@ table caption{
 	margin:5px;
 }
 td:hover {
-	background-color: #3399CC;
+	background-color: #1C536E;
     color: #FFFF66;
 	}
 th, td {
   padding: 15px;
   text-align: center;
-  border: 1px solid #3399CC;
+  border: 1px solid #1C536E;
 }
 table tr:nth-child(odd){
-   color: #3399CC;
+   color: #1C536E;
    background-color: #FFFF66;
    }
 table tr:first-child{
-   background-color: #3399CC;
+   background-color: #1C536E;
    color: #FFFF66;
    }
+#qr_div{
+	display:flex;
+    flex-direction: column;
+    align-items: center; 
+    bottom:20px;
+    left:20px;
+    position: fixed;
+}
+#qr_div p{
+	display:block;
+	text-align:center;
+	margin-top:10px;
+}
 #qr_code{
-	margin:0px;
-	position: absolute;
-    bottom: 50px;
-    left : 50px;
+	display:flex;
+    flex-direction: column;
+    align-items: center; 
+	width:120px;
+	height:100%;
     background: #FFFF66;
     padding:10px;
-    border-radius:20px;
 }
 #qr_code a{
 	display:block;
-	width:100%;
-	height:100%;
 }
 #qr_code a img{
 	display:block;
-	width:100%;
-	height:40px;
+	width:100px;
+	height:30px;
 }
-#qr_code p{
-	text-align:center;
-}
+
 #qr_code img{
-	width:130px;
-	height:130px;
-	margin:5px 0px 0px 0px;
+	width:100px;
+	height:100px;
+	margin:10px;
 }
-/*jquery UI*/
-.ui-autocomplete {
-    max-height: 150px; 
-    overflow-y: auto; 
-    overflow-x: hidden;
-  }
 
 /*homepage*/
 #square{
@@ -218,7 +223,7 @@ table tr:first-child{
     display: inline-block;
     line-height: 30px;
     font-size: 20px;
-    color: #3399CC;
+    color: #1C536E;
     padding:3px;
     margin-bottom: 10px;
 }
@@ -234,7 +239,7 @@ table tr:first-child{
 	overflow:hidden;
 	white-space: nowrap;
     display: block;
-    color:   #3399CC;
+    color:   #1C536E;
     text-decoration: none;
 }
 /*跑馬燈*/
@@ -304,11 +309,11 @@ table tr:first-child{
 }
 /*marketend.html*/
 #market_table th:nth-child(2n+2){
-   color: #3399CC;
+   color: #1C536E;
    background-color: #FFFF66;
    }
 #market_table th:nth-child(3n){
-   color: #3399CC;
+   color: #1C536E;
    background-color: #FFFF66;
    }
 /*choose.html*/
@@ -326,7 +331,6 @@ table tr:first-child{
 	display:flex;
 	flex-direction: row;
 	justify-content: flex-start;
-	float:left;
 	height:100%;
 }
 #choose2 input{
@@ -339,7 +343,7 @@ table tr:first-child{
     width:150px;
     height:50px;
     background-color: #FFFF66;
-    color:#3399CC;
+    color:#1C536E;
     text-align:center;
     line-height:50px;
     text-decoration:none;
@@ -347,7 +351,7 @@ table tr:first-child{
     border-right:30px solid white;
 }
 #choose2 p a:hover{
-	background-color: #3399CC;
+	background-color: #1C536E;
     color: #FFFF66;
 }
 #choose_div{
@@ -374,7 +378,7 @@ table tr:first-child{
     display: inline-block;
     line-height: 30px;
     font-size: 20px;
-    color: #3399CC;
+    color: #1C536E;
     padding:3px;
     margin-bottom: 10px;
 }
@@ -390,7 +394,7 @@ table tr:first-child{
 	overflow:hidden;
 	white-space: nowrap;
     display: block;
-    color:   #3399CC;
+    color:   #1C536E;
     text-decoration: none;
 }
 .dataframe tbody  td{
@@ -398,7 +402,7 @@ table tr:first-child{
 	color:black;
 }
 .dataframe tbody tr td:hover{
-	background-color: #3399CC;
+	background-color: #1C536E;
     color: #FFFF66;
 }
 #red{
@@ -419,7 +423,7 @@ table tr:first-child{
 
 input[type="submit"]{
 	padding:5px 15px; 
-	background-color: #3399CC;
+	background-color: #1C536E;
     color: #FFFF66;
 	border:0 none;
 	cursor:pointer;
@@ -448,9 +452,11 @@ input[type="text"]{
 	border-radius: 5px;
 }
 #five {
+	float:left;
     display:flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-top:100px;
     margin:0px auto;
     align-items:center;
     }
@@ -467,7 +473,7 @@ input[type="text"]{
 	height:50px;
 	line-height:50px;
 	text-decoration:none;
-	color:#3399CC;
+	color:#1C536E;
 }
 #news_table tbody tr td a:hover{
 	color:#FFFF66;
@@ -484,7 +490,7 @@ input[type="text"]{
 }
 #id_table1{
 	color:#FFFF66;
-	background:#3399CC;
+	background:#1C536E;
 	padding:5px 15px; 
 	border:2px black solid;
 	cursor:pointer;
@@ -496,7 +502,7 @@ input[type="text"]{
 }
 #id_table2{
 	color:#FFFF66;
-	background:#3399CC;
+	background:#1C536E;
 	padding:5px 15px; 
 	border:2px black solid;
 	cursor:pointer;
@@ -511,9 +517,9 @@ input[type="text"]{
 	height: 600px;
 	overflow-y: scroll;
 	overflow-x:hidden;
-	border-bottom:3px solid #3399CC;
-	border-left:2px solid #3399CC;
-	border-right:3px solid #3399CC;
+	border-bottom:3px solid #1C536E;
+	border-left:2px solid #1C536E;
+	border-right:3px solid #1C536E;
 }
 #chips_table div table thead, #chips_table div table tbody tr {
 	display: table;
@@ -529,7 +535,7 @@ input[type="text"]{
 	padding:0px 0px 10px 0px;
 	margin:10px;
 	border-radius: 0 50px 0 50px;
-	border:5px solid #3399CC;
+	border:5px solid #1C536E;
 }
 #trend_div{
 	height:30px;
@@ -547,7 +553,7 @@ input[type="text"]{
 	margin:10px;
 	border-radius: 0 50px 0 50px;
 	font-size:100px;
-	background-color:#3399CC;
+	background-color:#1C536E;
 	color:#FFFF66;
 	border:5px solid #FFFF66;
 	cursor: pointer;
@@ -555,15 +561,20 @@ input[type="text"]{
 /*newbie.heml*/
 /*transaction.html*/
 #id_box{
-	margin-bottom:10px;
+	display:flex;
+    flex-direction: column;
+    align-items: center; 
+	margin:0px;
 }
 #id_box p{
 	width:150px;
 	text-align:center;
 	margin:5px;
+	line-height:20px;
+	height:20px;
 } 
 #id_box p span{
-	color:#3399CC;
+	color:#1C536E;
 	font-weight:bold;
 }
 #id_img{
@@ -571,8 +582,23 @@ input[type="text"]{
 	height:150px;
 }
 #id_img img{
-	width:100%;height:100%;
+	width:100%;
+	height:100%;
 	border-radius: 20px;
+}
+#logout{
+	display:block;
+	text-decoration:none;
+	width:35px;
+	margin-top:5px;
+	padding:5px 15px; 
+	background-color: #1C536E;
+    color: #FFFF66;
+	border:0 none;
+	cursor:pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	margin-bottom:10px;
 }
 #login_register{
 	margin:200px auto 0px;
@@ -586,7 +612,7 @@ input[type="text"]{
 	padding:20px;
 }
 #login_register p{
-	color:#3399CC;
+	color:#1C536E;
 	font-weight:bold;
 	font-size:30px;
 }
@@ -611,8 +637,14 @@ input[type="text"]{
 	display:flex;
 	flex-direction: column;
 	justify-content: flex-start;
+	align-items: center;
 	float:left;
 	height:calc(100vh);
+	margin-right:20px;
+}
+#transaction2 p{
+	display:block;
+
 }
 #transaction2 p a{
 	text-decoration: none;
@@ -620,32 +652,39 @@ input[type="text"]{
     width:150px;
     height:50px;
     background-color: #FFFF66;
-    color:#3399CC;
+    color:#1C536E;
     text-align:center;
     line-height:50px;
     text-decoration:none;
     border-bottom:10px solid white;
-    border-right:30px solid white;
+
 }
 #transaction2 p a:hover{
-	background-color: #3399CC;
+	background-color: #1C536E;
     color: #FFFF66;
 }
 #transaction2_btn{
     width:150px;
     height:50px;
-    background-color: #3399CC;
+    background-color: #1C536E;
     color: #FFFF66;
     text-align:center;
     line-height:50px;
     border-bottom:10px solid white;
-    border-right:30px solid white;
 }
 #btn1{
-	float:left;
-	width:1220px;
+	width:100%;
 }
 #aa{
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding:20px;
+	background-color: #FFFF66;
+	margin:0px auto 10px;
+	font-size:15px;
+}
+#aaa{
 	display:flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -685,9 +724,13 @@ input[type="text"]{
 	justify-content: space-around;
 }
 #btn2_div>table{
-	width:500px;
+	width:100%;
+	margin-right:30px;
 }
-#btn3_div table{
+#table1 th, #table1 td{
+	   line-height:50px;
+} 
+#btn3_div>table{
 	width:1220px;
 }
 #btn4_div table{
@@ -708,6 +751,18 @@ input[type="text"]{
 
 /*predict.html*/
 /*loading*/
+#predict_from p{
+	font-size:25px;
+	color:#1C536E;
+	font-weight:bold;
+	margin-bottom:10px;
+}
+#predict_from p span{
+	font-weight:normal;
+	margin-left:10px;
+	font-size:15px;
+	color:black;
+}
 #status {/*   這是中間loading的gif坐標css,我們盡量讓他畫面置中  */
   position: fixed;
   width: 218px;
@@ -716,6 +771,7 @@ input[type="text"]{
   margin-top: -160px;
   left: 50%;
   top: 50%;
+  z-index: 999; 
 }
 #predict_div{
 	display:flex;

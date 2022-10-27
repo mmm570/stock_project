@@ -4,7 +4,24 @@
 {% autoescape off %}
 	{{fig2}}
 {% endautoescape %}
-{{Prediction}}
-<p>msg:{{msg}}</p>
-<p>mag:{{mag}}</p>
-<p>msg/mag 的值越小，說明預測模型描述實驗資料具有更好的精確度。</p>
+<div id='msg_mag'>
+	<table>
+		<tr>
+			<th>預測明日股價</th>
+		</tr>
+		<tr>
+			<td>{{Prediction}}</td>
+		</tr>
+	</table>
+	<table>
+		<caption><p><span>msg/mag 的值越小，說明預測模型描述實驗資料具有更好的精確度。</span></p></caption>
+		<tr>
+			<th>msg</th>
+			<th>mag</th>
+		</tr>
+		<tr>
+			<td>{{msg}}</td>
+			<td>{{mag}}</td>
+		</tr>
+	</table>
+</div>

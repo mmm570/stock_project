@@ -20,7 +20,6 @@ from stock import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('stock/',include('stock.urls',namespace='stock')),
-    path('markettrend/',include('markettrend.urls',namespace='markettrend')),
     path('choose/',include('choose.urls',namespace='choose')),
     path('chips/',include('chips.urls',namespace='chips')),
     path('trend/',include('trend.urls',namespace='trend')),

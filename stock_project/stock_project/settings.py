@@ -27,7 +27,7 @@ DEBUG = True
 import os
 if 'DYNO' in os.environ:    # Running on Heroku
     DEBUG = False
-
+    
 ALLOWED_HOSTS = ['*']
 
 
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'stock',
-    'markettrend',
     'choose',
     'chips',
     'trend',
@@ -83,7 +82,6 @@ WSGI_APPLICATION = 'stock_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
 if DEBUG:   # Running on the development environment
     DATABASES = {
         'default': {

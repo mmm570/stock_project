@@ -1,8 +1,19 @@
+//HOMEPAGE
+$(document).ready(function(){
+    $(window).scroll(function () {
+      var scrollVal = $(this).scrollTop();
+      if(scrollVal > 100){
+		  $('.home_top').attr('class','top_color');
+	  }else{
+		  $('.top_color').attr('class','home_top');
+	  }
+	});
+});
 //choose.html
 $(document).ready(function(){
 	$("#status").hide();
 	var dt = new Date();
-	$('#submit').on('click', function(){
+	$(document).on('click','#submit', function(){
 		$("#status").show();
 		var $a =$('#s_num');
 		function refresh(){
@@ -12,22 +23,35 @@ $(document).ready(function(){
 			    dataType: 'html',
 			    data:{'stock':$a.val()},
 			    success: function(data) {
-					$('#choose_div2').remove();
+					$('#choo').empty();
+					$('#choose_title').remove();
 			    	$('.fig').remove();
-			    	$('#choose_div').after(data);
-			    	$('#choose_div~div').attr('class','fig');
+			    	$('#choosepage_div').after(data);
+			    	$('#choosepage_div~div').attr('class','fig');
 					$("#status").hide(); 
-			    	if (Number($('tbody tr td:eq(9)').text())>0){
-			    		 $('tbody tr td:eq(9)').attr('id','red');
+					if (Number($('#redORgreen1 tbody tr td:eq(3)').text())>0){
+			    		 $('#redORgreen1 tbody tr td:eq(3)').attr('class','red');
 			    		}
-			    	else if(Number($('tbody tr td:eq(9)').text())<0){
-			    		$('tbody tr td:eq(9)').attr('id','green');
+			    	else if(Number($('#redORgreen1  tbody tr td:eq(3)').text())<0){
+			    		$('#redORgreen1 tbody tr td:eq(3)').attr('class','green');
 			    		}
-			    	else{
-			    		$('tbody tr td:eq(9)').attr('id','white');
+			    	else if(Number($('#redORgreen1  tbody tr td:eq(3)').text())==0){
+			    		$('#redORgreen1  tbody tr td:eq(3)').attr('class','white');
 			    		}
-			    	if ((dt.getHours()<=9 && dt.getHours()>=13) || (dt.getHours()==13 && dt.getMinutes()>=30)){
-			    		setTimeout(refresh,1000*10);
+			    		
+			    		
+			    	if (Number($('#redORgreen2 tbody tr td:eq(9)').text())>0){
+			    		 $('#redORgreen2 tbody tr td:eq(9)').attr('class','red');
+			    		}
+			    	else if(Number($('#redORgreen2  tbody tr td:eq(9)').text())<0){
+			    		$('#redORgreen2 tbody tr td:eq(9)').attr('class','green');
+			    		}
+			    	else if(Number($('#redORgreen2  tbody tr td:eq(9)').text())==0){
+			    		$('#redORgreen2  tbody tr td:eq(9)').attr('class','white');
+			    		}
+			    		
+			    	if ((dt.getHours()<=9 || dt.getHours()>=13) || (dt.getHours()==13 && dt.getMinutes()>=30)){
+			    		return false;
 			    		}
 			    	else{
 			    		setTimeout(refresh,1000*10);
@@ -36,12 +60,23 @@ $(document).ready(function(){
 			})
 			.fail(function() {
 				alert($a.val()+' 此股票代非上市股票')
+				$("#status").hide();
 			})
 		}
 		refresh();
 	})
-});
+		/*$('#submit').on('click', function(){
+		$.ajax({
+		    url: "/choose/random",
+		    type: 'GET',
+		    dataType: 'html',
+		})
+		.done(function(data) {
+		    	$('#choose_div').after(data);
+		})
 
+	});*/
+});
 //trend.html
 $(document).ready(function(){
 	//+新增
@@ -88,12 +123,13 @@ $(document).ready(function(){
 		})
 		.done(function(data) {
 			$("#status").hide();
-			$(e.target).next().remove();
-		    $(e.target).after(data);
+			$('#aa').next().remove();
+		    $('#aa').after(data);
 		})
 		.fail(function() {
-			alert('查無資訊')
-		})   
+			alert('網址錯誤')
+			$("#status").hide();
+		})    
 	})
 	
 	$(document).on('click','#submit_newsimg', function(e){
@@ -107,11 +143,12 @@ $(document).ready(function(){
 		})
 		.done(function(data) {
 			$("#status").hide(); 
-			$(e.target).nextAll().remove();
-		    $(e.target).after(data);
+			$('#aaa').nextAll().remove();
+		    $('#aaa').after(data);
 		})
 		.fail(function() {
 			alert('查無資訊')
+			$("#status").hide();
 		})   
 	})
 	/*$(document).ajaxStop(function(){

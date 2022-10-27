@@ -1,6 +1,4 @@
 from django.shortcuts import render,redirect
-from django.template.context_processors import request
-from django.http.response import HttpResponse
 from transformers import BertTokenizer, TFBertForSequenceClassification
 from transformers import InputExample, InputFeatures
 import tensorflow as tf
@@ -18,7 +16,6 @@ from predict.forms import new_forms, new_Imgforms
 from django.contrib import messages 
 import plotly.graph_objects as go  
 import plotly.offline as opy
-import json
 
 import yfinance as yf
 import datetime as dt
@@ -28,49 +25,47 @@ from tensorflow.keras.layers import Dense, Dropout, LSTM
 from dateutil.relativedelta import relativedelta
 import sklearn.metrics as metrics
 
+import other
+
+
 def predict(request):
     return render(request,'predict/predict.html',{'who':new_forms(),'who2':new_Imgforms()})
 def newUrl(request):
-    try:
-        stock_new_url = request.GET.get("url")
-        output_dir = './model_save1/'
-        
-        
-        os.chdir(r'C:\Users\sleep\Desktop') 
-        
-        model =TFBertForSequenceClassification.from_pretrained(output_dir )
-        tokenizer = BertTokenizer.from_pretrained(output_dir)
-        
-        #stock_new_url='https://tw.stock.yahoo.com/news/%E5%8F%B0%E7%A9%8D%E9%9B%BB%E6%A5%A0%E6%A2%93%E7%94%A2%E6%A5%AD%E5%9C%92%E5%8B%95%E5%9C%9F-%E5%91%A8%E9%82%8A%E6%88%BF%E5%B8%82%E6%9C%80%E9%AB%98%E6%BC%B2%E9%80%BE-3-%E6%88%90-040857735.html'
-        response = requests.get(stock_new_url)
-        soup = BeautifulSoup(response.text, "html.parser")         
-        
-        b=0
-        newData=[]
-        h1=soup.find('h1')
-        content= soup.find('div',{'class':'caas-body'}) 
-        time=soup.find('time',{'class':'caas-attr-meta-time'})
-        newData.append([h1.text,time.text,content.text])
-    
-    
-    
-        pre_text= [newData[0][2]]
-        tf_batch = tokenizer(pre_text[0][11:], max_length=128, padding=True, truncation=True, return_tensors='tf')
-        tf_outputs = model(tf_batch)
-        tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
-        labels = ['非常好','好','普通','不好','非常不好']  #好到壞
-        label = tf.argmax(tf_predictions, axis=1)
-        label = label.numpy()
-        newData[0].append(labels[label[0]])
-    except:
-        messages.success(request,'錯誤網址')
-        return redirect('predict:predict')
-    return render(request, 'predict/predict_news.html',{'newData':newData})  
-def newImg(request):
-    
+    stock_new_url = request.GET.get("url")
+    module_dir=os.path.dirname(__file__)
     output_dir = './model_save1/'
 
-    os.chdir(r'C:\Users\sleep\Desktop') 
+    os.chdir(os.path.abspath(os.path.join(module_dir, os.path.pardir))) 
+    
+    model =TFBertForSequenceClassification.from_pretrained(output_dir )
+    tokenizer = BertTokenizer.from_pretrained(output_dir)
+    
+    #stock_new_url='https://tw.stock.yahoo.com/news/%E5%8F%B0%E7%A9%8D%E9%9B%BB%E6%A5%A0%E6%A2%93%E7%94%A2%E6%A5%AD%E5%9C%92%E5%8B%95%E5%9C%9F-%E5%91%A8%E9%82%8A%E6%88%BF%E5%B8%82%E6%9C%80%E9%AB%98%E6%BC%B2%E9%80%BE-3-%E6%88%90-040857735.html'
+    response = requests.get(stock_new_url)
+    soup = BeautifulSoup(response.text, "html.parser")         
+    
+    newData=[]
+    h1=soup.find('h1')
+    content= soup.find('div',{'class':'caas-body'}) 
+    time=soup.find('time',{'class':'caas-attr-meta-time'})
+    newData.append([h1.text,time.text,content.text])
+
+
+
+    pre_text= [newData[0][2]]
+    tf_batch = tokenizer(pre_text[0][11:], max_length=128, padding=True, truncation=True, return_tensors='tf')
+    tf_outputs = model(tf_batch)
+    tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
+    labels = ['非常好','好','普通','不好','非常不好']  #好到壞
+    label = tf.argmax(tf_predictions, axis=1)
+    label = label.numpy()
+    newData[0].append(labels[label[0]])
+    return render(request, 'predict/predict_news.html',{'newData':newData})  
+def newImg(request):
+    module_dir=os.path.dirname(__file__)
+    output_dir = './model_save1/'
+
+    os.chdir(os.path.abspath(os.path.join(module_dir, os.path.pardir))) 
     
     model =TFBertForSequenceClassification.from_pretrained(output_dir )
     tokenizer = BertTokenizer.from_pretrained(output_dir)
@@ -78,18 +73,11 @@ def newImg(request):
     #print(df[0])
     get_text= request.GET.get("code")
     stock=[]
-    with open('test3.json',encoding="utf_8") as f:
-            data = json.load(f)
-    for i in range(len(data)-1):
-        if get_text == data[i]['name']:
-            targets=data[i]['stock']
-            stock.append(targets)
-            stock.append(get_text)
-        elif get_text ==data[i]['stock']:
-            targets=get_text
-            stock_name=data[i]['name']
-            stock.append(targets)
-            stock.append(stock_name)
+    have=other.sql(get_text)
+    targets=have[0]
+    stock_name=have[1]
+    stock.append(targets)
+    stock.append(stock_name)
         #主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式主程式
          # 要抓取的網址
     storestock=['2610','2330','2618','2303','2609']
