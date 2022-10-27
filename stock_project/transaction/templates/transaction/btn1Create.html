@@ -6,7 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>虛擬交易</title>
-    <link rel="stylesheet" href="{% static 'stock/css/test.css' %}">
+    <link rel="stylesheet" href="{% static 'stock/css/new.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 </head>
 <body>
 	{% if messages %}
@@ -16,79 +18,160 @@
 		    {% endfor %}
 		</script>
 	{% endif %}
-	<div class="top">
-		<header>
+	<div class="top"   data-aos="fade-down" data-aos-anchor-placement="top-bottom">
+		<header  data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine">
             <div><img src="/static/stock/img/logo.png" alt="logo"></div>
 			<p>朝陽虛擬智選股</p>
 		</header>
 		<nav>
-			<ul class="nav">
+			<ul class="nav"  data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
 				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
-				<li><a href="{% url 'markettrend:markettrend' %}">大盤走勢</a></li>
 				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
 				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
 				<li><a href="{% url 'trend:trend' %}">多圖走勢</a></li>
 				<li><a href="{% url 'newbie:newbie' %}">新手教學</a></li>
 				<li  id="foo">虛擬交易</li>
 				<li><a href="{% url 'predict:predict' %}">股票預測</a></li>
-			</ul>
+            </ul>
 		</nav>
 	</div>
 	<div id="main">
-		<div id='transaction2'>
-			<div id='id_box'>
-				<div id='id_img'><img src="/static/stock/img/id_img.png" alt="people"></div>
-				<p><span>{{id}}</span> 已登入</p>
-				<a id='logout' href="{%url 'transaction:logout' %}">登出</a>
+		<div id='qr_div'  data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<div id="qr_code">
+				<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
+				<img src="/static/stock/img/906csrwq.png" alt="">
 			</div>
-			<p id='transaction2_btn'>快速下單</p>
-			<p><a href="{%url 'transaction:btn2Create' %}">帳戶概覽</a></p>
-			<p><a href="{%url 'transaction:btn3Create' %}">交易紀錄</a></p>
-			<p><a href="{%url 'transaction:btn4Create' %}">庫存明細</a></p>
-			<p><a href="{%url 'transaction:btn5Create' %}">損益計算</a></p>
+			<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
 		</div>
-		<div id='btn1'>
-			<div id='btn1_div'>
-				<form id='aa' action="clickbuy1" method="get">
-				{% csrf_token %}
-				{{ stock_num.as_p }}
-				<input id='search_img' type="image" img src="/static/stock/img/search.png" onClick="document.formname.submit()">
-				</form>
-				<div>
-					<p>{{result}}<p>
-					{% if result_price %}
-						<table>
-							<tr>
-								<th>委買</th>
-								<th>委賣</th>
-							</tr>
-							{% for b,a in result_price %}
-							<tr>
-								<td> {{b}} </td>
-								<td> {{a}} </td>
-							</tr>
-							{% endfor %}
-						</table>
-					{% endif %}
+		<div id='t1_div' data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<div id='transaction2'>
+				<div id='t2_nav'>
+					<p id='transaction2_btn'>快速下單</p>
+					<p><a id='t2_nav_border-left' href="{%url 'transaction:btn2Create' %}">帳戶概覽</a></p>
+					<p><a href="{%url 'transaction:btn3Create' %}">交易紀錄</a></p>
+					<p><a href="{%url 'transaction:btn4Create' %}">庫存明細</a></p>
+					<p><a href="{%url 'transaction:btn5Create' %}">損益計算</a></p>
+				</div>
+				<div id='id_box'>
+					<div id='id_img'><img src="/static/stock/img/id_img.png" alt="people"></div>
+					<p><span>{{id}}</span></p>
+					<a id='logout' href="{%url 'transaction:logout' %}">登出</a>
 				</div>
 			</div>
-			<div id='btn1_div2'>
-				<form id='bb' action="buy_sell" method="get">
+			<div id='btn1'>
+				<div id='btn1_div'  data-aos="flip-left"  data-aos-easing="ease-in-sine">
+					<div class="wave2 one"></div>
+				    <div class="wave2 two"></div>
+				    <div class="wave2 three"></div>
+					<p class='bt1_title'>STEP1 輸入股票代碼或名稱，查詢該股票的五檔價</p>
+					<form id='aa' action="clickbuy1" method="get">
 					{% csrf_token %}
-					{{ who.as_p }}
-					<input id='search_img' type="image" img src="/static/stock/img/search.png" onClick="document.formname.submit()">
-				</form>	
-				<p>{{buy_sell_result}}<p>
+					{{ stock_num.as_p }}
+					<input id='search_img' type="submit" value='送出' onClick="document.formname.submit()">
+					</form>
+					<div id='btn1_forms1'>
+						<p>{{result}}<p>
+						{% if result_price %}
+							<table>
+								<tr>
+									<th>委買</th>
+									<th>委賣</th>
+								</tr>
+								{% for b,a in result_price %}
+								<tr>
+									<td> {{b}} </td>
+									<td id='sell'> {{a}} </td>
+								</tr>
+								{% endfor %}
+							</table>
+						{% endif %}
+					</div>
+				</div>
+				<div id='btn1_div2'   data-aos="flip-right" data-aos-easing="ease-in-sine">
+					<div class="wave3 one"></div>
+				    <div class="wave3 two"></div>
+				    <div class="wave3 three"></div>
+					<p class='bt1_title'>STEP2 選擇買/賣，送出後即可至交易紀錄查看。</p>
+					<form id='bb' action="buy_sell" method="get">
+						<h1>股票代碼 :<span>{{have.0}} {{have.1}}</span>價格 :<span>{{best_ask_price}}</span></h1>
+						<div id='btn1_forms2'>
+							{% csrf_token %}
+							{{ who.as_p }}
+							<input id='search_img' type="submit" value='送出' onClick="document.formname.submit()">
+						</div>
+					</form>		
+					<p id='btn1_text'>{{buy_sell_result}}</p>
+				</div>
 			</div>
-			
 		</div>
 	</div>	
-	<div id='qr_div' >
-		<div id="qr_code">
-			<a href="https://lin.ee/YFR4wbS" target="_blank"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友"></a>
-			<img src="/static/stock/img/906csrwq.png" alt="">
-		</div>
-		<p>官方Line bot帳號<br>可隨時查詢股票資訊</p>
-	</div>
+	<footer  data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+		<table   data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead>
+				<tr>
+					<th>開發團隊</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>指導老師	陳榮靜</td></tr>
+				<tr><td>10814056	柯沛淳</td></tr>
+				<tr><td>10814071	溫聖倫</td></tr>
+				<tr><td>10814090	林廷逸</td></tr>
+				<tr><td>10814092	游凱翔</td></tr>
+				<tr><td>10814137	方佳琪</td></tr>
+				<tr><td>10814160	伍慶翎</td></tr>			
+			</tbody>
+		</table>
+		<table   data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead> 
+				<tr>
+					<th>系統環境</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>MySQL</td></tr>
+				<tr><td>Python</td></tr>
+				<tr><td>Django</td></tr>
+				<tr><td>Excel</td></tr>
+				<tr><td>HTML5</td></tr>
+				<tr><td>CSS</td></tr>
+				<tr><td>Bootstrap</td></tr>
+				<tr><td>JavaScript</td></tr>
+				<tr><td>jQuery</td></tr>
+				<tr><td>AJAX</td></tr>
+			</tbody>
+		</table>
+		<table  data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead>
+				<tr>
+					<th>資料來源</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><a href='https://tw.stock.yahoo.com/' target="_blank">Yahoo股市</a></td></tr>
+				<tr><td><a href='https://goodinfo.tw/tw/index.asp' target="_blank">Goodinfo</a></td></tr>
+				<tr><td><a href='https://www.twse.com.tw/zh/' target="_blank">台灣證券交易所</a></td></tr>
+				<tr><td><a href='https://histock.tw/' target="_blank">histock</a></td></tr>
+			</tbody>
+		</table>
+		<table  data-aos="fade-right" data-aos-easing="ease-in-sine">
+			<thead> 
+				<tr>
+					<th>主要應用</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>LSTM</td></tr>
+				<tr><td>BERT</td></tr>
+			</tbody>
+		</table>
+	</footer>
+	<script>
+		AOS.init({
+			duration:500,
+		});
+	</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+<script src="{% static 'stock/js/all.js' %}" type="text/javascript"></script>	
 </body>
 </html>
