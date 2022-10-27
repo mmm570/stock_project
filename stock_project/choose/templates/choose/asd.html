@@ -1,11 +1,12 @@
+<p id='choose_title'   data-aos="fade-right" >{{title}}<span>{{time}}</span></p>
 {% autoescape off %}
 	{{newfig}}
 {% endautoescape %}
 <br>
 <table class='fig' id='news_table'>
-	<tr>
-		<th>新聞</th>
-		<th>預測評級</th>
+	<tr> 
+		<th>Yahoo新聞標題<span>(使用yahoo股市的新聞網址，判斷新聞的好壞評級)</span></th>
+		<th>預測評級<span>(非常好-好-普通-不好-非常不好)</span></th>
 	</tr>
 	{%for i in newData %}
 	<tr>
@@ -13,5 +14,5 @@
 		<td> {{i.4}} </td>
 	</tr>
 	{% endfor %}
-
 </table>
+<!-- {{a1}} -->
