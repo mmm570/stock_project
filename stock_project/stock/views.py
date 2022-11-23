@@ -92,7 +92,7 @@ def stock(request):
     
     
      # 要抓取的網址
-    url='https://tw.stock.yahoo.com/rank/price?exchange=TAI'
+    url='https://tw.stock.yahoo.com/rank/volume?exchange=TAI'
     list_req = requests.get(url)
     soup = BeautifulSoup(list_req.content, "html.parser")
     stock = []
@@ -101,8 +101,10 @@ def stock(request):
     i=0
     for a in soup.find_all('div',{'class':'Bgc(#fff) table-row D(f) Ai(c) Bgc(#e7f3ff):h Fz(16px) Px(12px) Bxz(bb) Bdbs(s) Bdbw(1px) Bdbc($bd-primary-divider) H(52px) H(a)--mobile'}):
         a1=a.find('div',{'class':'Lh(20px) Fw(600) Fz(16px) Ell'})
+        if a1 == None:
+            a1=a.find('div',{'class':'Lh(20px) Fw(600) Fz(14px) Ell'})
         a2=a.find('div',{'class':'D(f) Ai(c)'})
-        stock.append([a1.text+a2.text])#股票名稱
+        stock.append([a1.text+' / '+a2.text])#股票名稱
         
         a3=a.find('div',{'class':'Fxg(1) Fxs(1) Fxb(0%) Ta(end) Mend($m-table-cell-space) Mend(0):lc Miw(76px)'})
         stock[i].append(a3.text)#股票價格

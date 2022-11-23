@@ -205,7 +205,7 @@ header p{
     color:white;
     margin:20px;
 }
-.nav{
+#nav{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -217,21 +217,19 @@ header p{
 #foo{
     border-bottom: 3px #FFB23F solid;
 }
-.nav li{
+#nav li{
 	text-align:center;
 	width:100%;
-	height:100px;
 	line-height:100px;
     color:white;
-
 }
-.nav a{
+#nav a{
     display: block;
 	text-decoration:none;
 	color:white;
 	width:100%;
 }
-.nav li a::after{
+#nav li a::after{
 	content:"";
 	display:block;
 	width:0%;
@@ -239,7 +237,7 @@ header p{
 	background:#FFB23F;
 	transition:.2s 0s;
 }
-.nav li a:hover::after{
+#nav li a:hover::after{
 	width:100%;
 }
 #home{
@@ -451,6 +449,17 @@ h5{
     padding-bottom:2px;
     border-bottom:2px solid #FF6A00;
 }
+#page p{
+	text-align:center;
+	width:150px;
+	height:40px;
+	line-height:40px;
+    display:block;
+    font-size: 20px;
+    color:#FFF;
+    background-color:#FF6A00;
+    border:2px solid #FF6A00;
+}
 #page h1{
 	text-align:center;
 	width:150px;
@@ -465,13 +474,13 @@ h5{
 	line-height:40px;
     display:block;
     font-size: 20px;
-    border:2px solid #FF6A00;
     text-decoration:none;
-    color:#FF6A00;
+    color:black;
 }
 #page h1 a:hover{
-    color:white;
-    background:#FF6A00;
+    background-color:white;
+    color:#FF6A00;
+    border:2px solid #FF6A00;
 }
 #choose_title{
 	font-size:30px;
@@ -494,6 +503,22 @@ h5{
 	justify-content: space-between;
 	align-items:center;
 	}
+#c_div{
+	width:1000px;
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items:center;
+	}
+#choose2{
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width:1000px;
+	font-size:20px;
+	padding-bottom:20px;
+	align-items:center;
+}
 #choose2 form{
 	width:100%;
 	display:flex;
@@ -501,19 +526,22 @@ h5{
 	justify-content: start;
 	align-items:start;
 }
-#choose2 form{
-	width:100%;
+
+#choose2 form p{
+	display:block;
+	margin-right:50px;
+}
+#choose2 p{
 	display:flex;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items:center;
 }
-#choose2 form p{
-	display:block;
-	margin-right:50px;
+#choose2 p label{
+	margin-right:10px;
 }
-input[type="submit"]{
-	padding:5px 15px; 
+input[type="submit"]{ 
+	height:30px;
 	background-color: #FF6A00;
     color: white;
 	border:1px solid #FF6A00;
@@ -523,7 +551,6 @@ input[type="submit"]{
 	font-size:15px;
 }
 input[type="submit"]:hover{
-	padding:5px 15px; 
 	background-color: white;
     color: #FF6A00;
 	border:1px solid #FF6A00;
@@ -534,41 +561,44 @@ input[type="submit"]:hover{
 }
 input[type="submit"]:focus{
 	border:1px solid #FF6A00;
-	padding:5px 15px; 
 	background-color: white;
     color: #FF6A00;
 }
 input[type="text"]{
+	padding-left:10px;
+	height:25px;
 	width:150px;
-	font-size:15px;
-	padding:5px 15px; 
+	font-size:15px; 
 	border:1px #FF6A00 solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 }
 input[type="text"]:hover{
-	padding:3px 13px; 
-	border:3px #FF6A00 solid;
+	background:#FF6A00;
+	color:white;
+	border:1px #FF6A00 solid;
 }
 input[type="text"]:focus{
-	border:3px #FF6A00 solid;
+	border:1px #FF6A00 solid;
 }
 input[type="date"]{
 	width:150px;
 	font-size:15px;
-	padding:5px 15px; 
+	padding-left:10px;
+	height:25px; 
 	border:1px #FF6A00 solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 }
 input[type="date"]:hover{
-	padding:3px 13px; 
-	border:3px #FF6A00 solid;
+	background:#FF6A00;
+	color:white;
+	border:1px #FF6A00 solid;
 }
 input[type="date"]:focus{
-	border:3px #FF6A00 solid;
+	border:1px #FF6A00 solid;
 }
 #five {/*即使股價&五擋價*/
 	float:left;
@@ -680,7 +710,7 @@ input[type="date"]:focus{
 	margin-right:50px;
 }
 /*chips*/
-#choose2{
+#chips{
 	display:flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -695,28 +725,39 @@ input[type="date"]:focus{
 #id_table1{
 	width:150px;
 	font-size:15px;
-	padding:5px 15px; 
+	padding-left:10px;
+	height:25px;
 	border:1px #FF6A00 solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 }
 #id_table1:hover{
-	border:2px #FF6A00 solid;
-	padding:3px 13px;
+	background:#FF6A00;
+	color:white;
+	border:1px #FF6A00 solid;
 }
+#id_table1:focus{
+	border:1px #FF6A00 solid;
+}
+
 #id_table2{
 	width:150px;
 	font-size:15px;
-	padding:5px 15px; 
+	padding-left:10px;
+	height:25px;
 	border:1px #FF6A00 solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 }
 #id_table2:hover{
-	border:2px #FF6A00 solid;
-	padding:3px 13px;
+	background:#FF6A00;
+	color:white;
+	border:1px #FF6A00 solid;
+}
+#id_table2:focus{
+	border:1px #FF6A00 solid;
 }
 #chips_div{
 	border-bottom:2px solid #FF6A00;
@@ -830,42 +871,32 @@ input[type="date"]:focus{
 	justify-content: flex-start;
 }
 /*newbie*/
-#nav{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: flex-start;
-	width:800px;
-	font-size:20px;
-	color:white;
-}
-#nav li{
-	text-align:center;
-	width:100%;
-	height:100px;
-	line-height:100px;
-    color:white;
-
-}
-#nav a{
-    display: block;
-	text-decoration:none;
-	color:white;
-	width:100%;
-}
-#nav li a::after{
-	content:"";
-	display:block;
-	width:0%;
-	height:3px;
-	background:#FFB23F;
-	transition:.2s 0s;
-}
-#nav li a:hover::after{
-	width:100%;
-}
 .carousel-inner{
 	box-shadow: 0 2px 30px rgba(0, 0, 0, 0.2);
+}
+
+#nav-tab .nav-link.active{
+	color:#fff;
+	background-color:#FF6A00;
+	border:1px solid #FF6A00;
+}
+#nav-tab .nav-link{
+	color:black;	
+	background-color:#fff;
+	border:0px;
+}
+#nav-tab .nav-link:hover{
+	border:1px solid #FF6A00;
+	color:#FF6A00;
+	background-color:#fff;
+}
+#nav-tab .nav-link.active:hover{
+	color:#fff;
+	background-color:#FF6A00;
+	border:1px solid #FF6A00;
+}
+.tab-content{
+	border-top:1px solid #FF6A00;
 }
 /*transaction*/
 #transaction_from{
@@ -948,7 +979,8 @@ input[type="date"]:focus{
 }
 #id_id{
 	width:180px;
-	padding:5px 10px; 
+	padding-left:10px;
+	height:25px;
 	border:1px #FF6A00 solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
@@ -957,16 +989,17 @@ input[type="date"]:focus{
 	margin-bottom:20px;
 }
 #id_id:hover{
-	padding:3px 10px; 
-	border:3px #FF6A00 solid;
+	background:#FF6A00;
+	color:white;
+	border:1px #FF6A00 solid;
 }
 #id_id:focus{
-	padding:3px 10px; 
-	border:3px #FF6A00 solid;
+	border:1px #FF6A00 solid;
 }
 #id_password{
 	width:180px;
-	padding:5px 10px; 
+	padding-left:10px;
+	height:25px; 
 	border:1px #FF6A00 solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
@@ -975,12 +1008,12 @@ input[type="date"]:focus{
 	font-size:15px;
 }
 #id_password:hover{
-	padding:3px 10px; 
-	border:3px #FF6A00 solid;
+	background:#FF6A00;
+	color:white;
+	border:1px #FF6A00 solid;
 }
 #id_password:focus{
-	padding:3px 10px; 
-	border:3px #FF6A00 solid;
+	border:1px #FF6A00 solid;
 }
 /*transaction2_login*/
 #t1_div{
@@ -996,6 +1029,7 @@ input[type="date"]:focus{
 	margin-bottom: 40px;
     border-bottom:2px solid #FF6A00;
 }
+
 #t2_nav{
 	display:flex;
 	flex-direction: row;
@@ -1009,8 +1043,9 @@ input[type="date"]:focus{
     display:block;
     font-size: 20px;
 }
-#t2_nav_border-left{
-    border-left:2px solid #FF6A00;
+#transaction2_btn{
+	color:#FFF;
+    background-color:#FF6A00;
 }
 #t2_nav p a{
 	width:150px;
@@ -1018,15 +1053,15 @@ input[type="date"]:focus{
 	line-height:40px;
     display:block;
     font-size: 20px;
-    border-right:2px solid #FF6A00;
-    border-top:2px solid #FF6A00;
     border-bottom:0px; 
     text-decoration:none;
-    color:#FF6A00;
+    color:black;
 }
 #t2_nav p a:hover{
-    color:white;
-    background:#FF6A00;
+    color:#FF6A00;
+    border-left:2px solid #FF6A00;
+    border-right:2px solid #FF6A00;
+    border-top:2px solid #FF6A00;
 }
 #id_box{
 	display:flex;
@@ -1048,12 +1083,14 @@ input[type="date"]:focus{
 #id_img{
 	width:30px;
 	height:30px;
+	margin-bottom:10px;
 }
 #id_img img{
 	width:100%;
 	height:100%;
 	border-radius: 20px;
-	margin-bottom:5px;
+	margin-bottom:10px;
+	border:2px solid #FF6A00;
 }
 #logout{
 	display:block;
@@ -1266,8 +1303,12 @@ input[type="date"]:focus{
 	text-align:center;
 	width:46%;
 }
+#table1{
+	height:100%;
+}
 #table1 th, #table1 td{
-	line-height:80px;
+	line-height:60px;
+	height:60px;
 } 
 #table1 th{
 	background:#FF6A00;
@@ -1280,20 +1321,7 @@ input[type="date"]:focus{
 	background:#FF6A00;
 	color:white;
 } 
-#table2 th, #table2 td{
-	line-height:40px;
-} 
-#table2 th{
-	background:#FF6A00;
-	color:white;
-} 
-#table2 td{
-	border:1px solid #FF6A00;
-} 
-#table2 td:hover{
-	background:#FF6A00;
-	color:white;
-} 
+ 
 #btn3_div>table{
 	width:90%;
 	margin:auto;
