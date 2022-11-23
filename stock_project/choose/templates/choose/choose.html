@@ -17,7 +17,7 @@
 			<p>朝陽虛擬智選股</p>
 		</header>
 		<nav>
-			<ul class="nav"  data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
+			<ul id="nav"  data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
 				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
 				<li id="foo">個股看盤</li>
 				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
@@ -39,7 +39,7 @@
 		<div id="status"><img src="/static/stock/img/Spin-1s-200px.gif"/></div>
 		<div id='choosepage_div'  data-aos="fade-right" >
 			<div id='page'>
-				<h1>即時股價</h1>
+				<p>即時股價</p>
 				<h1><a href="{%url 'choose:choose2' %}">技術線圖</a></h1>
 			</div>
 			<div id='choose_random'>
@@ -110,7 +110,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr><td>MySQL</td></tr>
+				<tr><td>PostgreSQL</td></tr>
 				<tr><td>Python</td></tr>
 				<tr><td>Django</td></tr>
 				<tr><td>Excel</td></tr>
@@ -153,6 +153,54 @@
 		});
 	</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
-<script src="{% static 'stock/js/all.js' %}" type="text/javascript"></script>	
+<script src="{% static 'stock/js/all.js' %}" type="text/javascript"></script>
+<script> 
+		var i=$('#market_table tbody tr td:eq(2)').text()
+		if (Number($('#market_table tbody tr td:eq(2)').text())>0){
+			   $('#market_table tbody tr td:eq(2)').attr('class','red');
+			   $('#market_table tbody tr td:eq(2)').append('%');
+		  }
+		else if(Number($('#market_table tbody tr td:eq(2)').text())<0){
+			$('#market_table tbody tr td:eq(2)').attr('class','green');
+			$('#market_table tbody tr td:eq(2)').append('%');
+			}
+		else if(Number($('#market_table tbody tr td:eq(2)').text())==0){
+			$('#market_table tbody tr td:eq(2)').attr('class','white');
+			$('#market_table tbody tr td:eq(2)').append('%');
+			}
+		
+		var j=$('#market_table tbody tr td:eq(1)').text()
+		if (Number($('#market_table tbody tr td:eq(1)').text())>0){
+			   $('#market_table tbody tr td:eq(1)').attr('class','red');
+		  }
+		else if(Number($('#market_table tbody tr td:eq(1)').text())<0){
+			$('#market_table tbody tr td:eq(1)').attr('class','green');
+			}
+		else if(Number($('#market_table tbody tr td:eq(1)').text())==0){
+			$('#market_table tbody tr td:eq(1)').attr('class','white');
+			}
+		$('#hot  tbody tr td:nth-child(4)').each(function(){
+			if($(this).text()>0){
+				$(this).addClass("red");
+			}
+			else if($(this).text()<0){
+				$(this).addClass("green");
+			}
+			else{
+				$(this).addClass("white");
+			}
+		})
+		$('#hot  tbody tr td:nth-child(5)').each(function(){
+			if($(this).text().replace('%', '')>0){
+				$(this).addClass("red");
+			}
+			else if($(this).text().replace('%', '')<0){
+				$(this).addClass("green");
+			}
+			else{
+				$(this).addClass("white");
+			}
+		})
+	</script>	
 </body>
 </html>

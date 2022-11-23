@@ -125,7 +125,7 @@ def choose(request):
     fig.update_layout(hovermode="x unified",height=500)
     div = opy.plot(fig, auto_open=False, output_type='div')
     efg=float(abc)-float(df['加權指數'][0])
-    hij=str(round((efg/float(abc)*100),2))+'%'
+    hij=str(round((efg/float(abc)*100),2))
     stock_data=[]
     stock_data_2=[]
     stock_data.append(abc)
@@ -402,7 +402,7 @@ def timely_stock(request):
 #    a2=suggest[a1]
 #    return render(request,'choose/addrandom.html',{'suggest':a2})
 def choose2(request):
-    return render(request,'choose/choose2.html',{'who':efgh(),'stock':request.session['stock']})
+    return render(request,'choose/choose2.html',{'who':efgh()})
 def choose2_submit(request):
     start_time = request.GET["start_time"]
     end_time = request.GET["end_time"]
