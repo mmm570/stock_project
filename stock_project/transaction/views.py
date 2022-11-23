@@ -4,6 +4,7 @@ from django.contrib import messages
 import twstock
 import other
 from django.db import connection
+from _ast import If
 
 #django session
 #https://iter01.com/672416.html 
@@ -89,37 +90,38 @@ def clickbuy1(request):#查詢
     return render(request, 'transaction/btn1Create.html',{'who':sent(),'stock_num':newform,'result':title_text,'result_price':all_price,'id':request.session['saveid'],'have':have,'best_ask_price':best_ask_price[0]})
 def buy_sell(request):#查詢   
     try:    
-    
         get_text = request.session['have0']
         have=other.sql(get_text)
         stockid=have[0]
         stock_name=have[1]
         title_text=stockid+' '+stock_name
-            
         choose_buy_sell = request.GET["choose"]
         stock_price = str(request.session['ask'])
         buy_sell_count = request.GET["count"]
         saveid=request.session['saveid']
-        stock=twstock.realtime.get(stockid)               
+        stock=twstock.realtime.get(stockid) 
+                  
         if choose_buy_sell   == 'buy' : #買進
             with connection.cursor() as cursor:
                 #-------------------------------------------------
                 command = "SELECT allmoney FROM charts WHERE id = %s"#判斷金額足夠
                 cursor.execute(command,[saveid])
                 result = cursor.fetchone()[0]
-                if float(result) < float(stock_price)*int(buy_sell_count)*1000:
+                if float(result) < float(stock_price)*1000*int(buy_sell_count):
                     buy_sell_result="金額不足無法買進"
                 else:
                     #-------------------------------------------------
-                    command = "SELECT * FROM stock " #抓取資料庫資料行數
+                    command = "SELECT * FROM stock ORDER BY id1 ASC " #抓取資料庫資料行數
                     cursor.execute(command)
                     result = cursor.fetchall()
+                    print(result,"#判斷金額足夠玩，抓取資料庫資料行數")
                     if len(result) == 0 :
                         id1=1
                     else:
                         id1=result[-1][0]+1
                     #-------------------------------------------------
                                                     #抓取3種輸入資料 代碼 價格 張數
+                    print("id1",id1,"抓取3種輸入資料 代碼 價格 張數")
                     command = "insert into stock(id1,stockmoney1,stockmoney2,stockmoney3,stock_id) values(%s,%s,%s,%s,%s)"
                     cursor.execute(command,[id1,stockid,stock_price,buy_sell_count,saveid])
                     
@@ -141,7 +143,7 @@ def buy_sell(request):#查詢
                         id1=1
                     else:
                         id1=len(result)+1
-                    print(id1)
+                    
                     command = "insert into record_1(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell) values(%s,%s,%s,%s,%s,now(),'買進')"
                     cursor.execute(command,[id1,stockid,stock_price,buy_sell_count,saveid])
                     #------------------------------------------------- 修改原始金額
@@ -149,7 +151,7 @@ def buy_sell(request):#查詢
                     cursor.execute(command,[saveid])
     
                     result1 = cursor.fetchone()
-                    arr1 = float(stock_price)*int(buy_sell_count)*1000
+                    arr1 = float(stock_price)*1000*int(buy_sell_count)
                     result2 = float(result1[0]) - arr1
                     command = "UPDATE charts SET allmoney = %s WHERE id = %s"
                     cursor.execute(command,[result2, saveid])
@@ -157,18 +159,29 @@ def buy_sell(request):#查詢
                     #-------------------------------------------------
                     connection.commit() 
                     
-                    buy_sell_result=("已買出 :  "+title_text+"    /價格為 : "+stock_price+'  /張數 : '+buy_sell_count+'張') #顯示買了甚麼
+                    buy_sell_result=("已買入 :  "+title_text+"    /價格為 : "+stock_price+'  /張數 : '+buy_sell_count+'張') #顯示買了甚麼
         #買進的底
         if choose_buy_sell == 'sell' :                                  #賣出
-            
             with connection.cursor() as cursor:
                 command = "SELECT stockmoney1 FROM stock where (stock_id=%s)and(stockmoney1=%s)"
                 cursor.execute(command,[saveid,stockid])
-                result = cursor.fetchone()      #result[0] 股票代碼
-            if result is None:
+                result = cursor.fetchall()       #result[0] 股票代碼
+            print('result',result[0][0])
+            
+            with connection.cursor() as cursor:
+                command = "SELECT sum(stockmoney3) FROM stock GROUP BY (stock_id=%s)and(stockmoney1=%s)"
+                cursor.execute(command,[saveid,stockid])
+                rrresult = cursor.fetchall()
+            print('rrresult:',rrresult)
+            if result[0][0] is None:
                 buy_sell_result=('您並未擁有'+title_text+'股票')
+            elif int(rrresult[-1][0]) < int(buy_sell_count):
+                buy_sell_result=('您擁有的'+title_text+'只有'+str(rrresult[-1][0])+'張'+'，不足'+str(buy_sell_count)+'張')
+                print('abc',int(rrresult[-1][0]) , int(buy_sell_count))
+            
             else:
-                if result[0] == stockid:
+                print('123')
+                if result[0][0] == stockid:
                     #connection.commit()    #connection.close()                     
                     with connection.cursor() as cursor: 
                         command = "SELECT sum(stockmoney3) FROM stock GROUP BY (stock_id=%s)and(stockmoney1=%s)" 
@@ -176,19 +189,9 @@ def buy_sell(request):#查詢
                         result5 = cursor.fetchall()  #加總股票張數(庫存)
                         connection.commit()    
                     if int(buy_sell_count)<=int(result5[-1][0]):#如果賣出的張數<=庫存張數
-                                            
-                        with connection.cursor() as cursor: 
                         
-                            command = "SELECT stockmoney1,stockmoney2,stockmoney3 FROM stock where (stock_id=%s)and(stockmoney1=%s)"
-                            cursor.execute(command,[saveid,stockid])
-                            result = cursor.fetchall() #代碼 張數 價格
-                            connection.commit()    
-                            
-                        a1=0
-                        for i in range (0,len(result)):
-                            a1+=float(result[i][1])*float(result[i][2])
-                        a1=round(a1/len(result),2)  #平均成本(張)
-        
+                        print(int(buy_sell_count),'  ',int(result5[-1][0]),'如果賣出的張數<=庫存張數')
+                        
         
                         #抓原本資產 加上賺的 刪原本的股票 新增剩餘的股票
                         #connection.commit()    #connection.close()                     
@@ -199,21 +202,21 @@ def buy_sell(request):#查詢
                         connection.commit()    
                         
                         result4=int(result3[0])
-                        #connection.commit()    #connection.close()                     
+                                            
                         with connection.cursor() as cursor: 
                             command = "UPDATE charts SET allmoney = %s WHERE id = %s"#加上賺的
-                            result4 += float(stock_price)*int(buy_sell_count)*1000
+                            result4 += float(stock_price)*1000*int(buy_sell_count)
                             cursor.execute(command,[result4, saveid])
                         connection.commit()
                           
                         if int(result5[-1][0])-int(buy_sell_count)==0:
-                            #connection.commit()    #connection.close()                     
+                                               
                             with connection.cursor() as cursor: 
                                 command = "DELETE FROM stock WHERE (stock_id=%s)and(stockmoney1=%s)"
                                 cursor.execute(command,[saveid,stockid])
                             connection.commit()    
                             
-                            #connection.commit()    #connection.close()                     
+                                            
                             with connection.cursor() as cursor:
                                 command = "SELECT * FROM record " #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -251,7 +254,7 @@ def buy_sell(request):#查詢
                             #connection.commit()    #connection.close()                     
                             with connection.cursor() as cursor:    
                                 
-                                command = "SELECT * FROM record_1 " #抓取資料庫資料行數
+                                command = "SELECT * FROM record_1 order by id1 ASC" #抓取資料庫資料行數
                                 cursor.execute(command)
                                 result = cursor.fetchall()
                             connection.commit()    
@@ -260,6 +263,7 @@ def buy_sell(request):#查詢
                                 id1=1
                             else:
                                 id1=result[-1][0]+1
+                            
                             #------
                             #connection.commit()    #connection.close()                     
                             with connection.cursor() as cursor:  
@@ -267,17 +271,58 @@ def buy_sell(request):#查詢
                                 cursor.execute(command,[id1,stockid,stock_price,buy_sell_count,saveid,id2])
                             connection.commit()
                               
-        
+                        
                         if int(result5[-1][0])-int(buy_sell_count)>0:
+                                #庫存張數                賣出張數
+                            print(int(result5[-1][0]),int(buy_sell_count),"庫存張數 賣出張數",'int(result5[-1][0])-int(buy_sell_count)>0')
                             mon= int(result5[-1][0])-int(buy_sell_count)
-                            #connection.commit()    #connection.close()                     
-                            with connection.cursor() as cursor: 
-                                command = "DELETE FROM stock WHERE (stock_id=%s)and(stockmoney1=%s)"
+                            #剩餘張數
+                            #connection.commit()    #connection.close()    
+                            with connection.cursor() as cursor:
+                                command = "SELECT * FROM stock where (stock_id=%s and stockmoney1=%s) ORDER BY id1 ASC " #抓取資料庫資料行數
                                 cursor.execute(command,[saveid,stockid])
-                            connection.commit()    
-                                
-                            
-                            #connection.commit()    #connection.close()                     
+                                result = cursor.fetchall()
+                            connection.commit()  
+                            q3=int(buy_sell_count)
+                            print(int(buy_sell_count),"q3=int(buy_sell_count)")
+                            print(result,"抓取資料庫資料行數")
+                            q4=0
+                            for i in range(0,len(result)):
+                                            #庫存張數        賣出張數
+                                print("i=",i)
+                                     
+                                if int(result[i][3])>q3:
+                                    print(int(result[i][3]),"  ",q3,"int(result[i][3])>q3")
+                                    q1=result[i][3]-int(q3)#修改張數
+                                    with connection.cursor() as cursor:
+                                        command = "update stock set stockmoney3=%s where id1=%s" #抓取資料庫資料行數
+                                        cursor.execute(command,[q1,result[i][0]])   
+                                    connection.commit()
+                                    break
+                              
+                                if int(result[i][3])==q3: 
+                                    print(int(result[i][3]),"  ",q3,"int(result[i][3])==q3")
+                                    with connection.cursor() as cursor:
+                                        command = "delete from stock where id1=%s" #抓取資料庫資料行數
+                                        cursor.execute(command,[result[i][0]])
+                                        
+                                    connection.commit()
+                                    break
+                              
+                                if int(result[i][3])<q3:
+                                    print(int(result[i][3]),"  ",q3,"int(result[i][3])<q3")
+                                    with connection.cursor() as cursor:
+                                        command = "delete from stock where id1=%s" #抓取資料庫資料行數
+                                        cursor.execute(command,[result[i][0]])
+                                        
+                                    connection.commit()
+                                    
+                                    q4+=int(result[i][3])
+                                    q3=int(buy_sell_count)-q4
+                                    #q3=int(buy_sell_count)-int(result[i][3])
+                                    print("q3=int(buy_sell_count)-int(result[i][3])  ",q3)
+                            #connection.commit()    #connection.close()  
+                                             
                             with connection.cursor() as cursor:
                                 command = "SELECT * FROM record " #抓取資料庫資料行數
                                 cursor.execute(command)
@@ -289,7 +334,8 @@ def buy_sell(request):#查詢
                                 id1=1
                             else:
                                 id1=result[-1][0]+1
-                            #connection.commit()    #connection.close()                     
+                            #connection.commit()    #connection.close()     
+                                        
                             with connection.cursor() as cursor:
                                 
                                 command = "insert into record(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell) values(%s,%s,%s,%s,%s,now(),'賣出')"
@@ -335,16 +381,17 @@ def buy_sell(request):#查詢
                                 id1=1
                             else:
                                 id1=result[-1][0]+1                        #------
-                            #connection.commit()    #connection.close()                     
+                            #connection.commit()    #connection.close()    
+                                            
                             with connection.cursor() as cursor: 
                                 command = "insert into record_1(id1,stockmoney1,stockmoney2,stockmoney3,stock_id,date1,buy_sell,buy_sell_1) values(%s,%s,%s,%s,%s,now(),'賣出',%s)"
                                 cursor.execute(command,[id1,stockid,stock_price,buy_sell_count,saveid,id2])
-        
+                         
                             connection.commit()
                             
                             #connection.commit()    #connection.close()                     
                             with connection.cursor() as cursor: 
-                                command = "SELECT * FROM stock " #抓取資料庫資料行數
+                                command = "SELECT * FROM stock ORDER BY id1 ASC " #抓取資料庫資料行數
                                 cursor.execute(command)
                                 result = cursor.fetchall()
                             connection.commit()
@@ -353,21 +400,16 @@ def buy_sell(request):#查詢
                                 id1=1
                             else:
                                 id1=result[-1][0]+1
+                            
         
                             #connection.commit()    #connection.close()                     
-                            with connection.cursor() as cursor: 
-                                
-                                command = "insert into stock(id1,stockmoney1,stockmoney2,stockmoney3,stock_id) values(%s,%s,%s,%s,%s)"
-                                cursor.execute(command,[id1,stockid,a1,mon, saveid])
-        
-        
-                            connection.commit()
+                            
                         else:
                             buy_sell_result=("輸入錯誤")
                     else:
                         buy_sell_result=("輸入錯誤")
         #--------------------------------------------------
-                    a=''
+                    a=0
                     s='已實現'
                     #connection.commit()    #connection.close()                     
                     with connection.cursor() as cursor:        
@@ -377,20 +419,14 @@ def buy_sell(request):#查詢
                         connection.commit()                  
                         
                     a=result1[-1][3]#找資料庫record_1賣出的有多少張數
-                    print('123')
-                    print(a)
-                    print(result1)
-                    print("-------------------------") 
-                    
+                 
                     
                     with connection.cursor() as cursor:    
                         command = "SELECT * FROM record_1 where stock_id=%s and stockmoney1=%s and buy_sell='買進'"
                         cursor.execute(command,[saveid,stockid])
                         result2 = cursor.fetchall()
                         connection.commit()                  
-                        print(result2)#找資料庫record_1買進的有多少列
-                        print('\n')
-                        print("-------------------------") 
+                      
                     
                     with connection.cursor() as cursor:   
                         command = "SELECT * FROM record_1 where stock_id=%s and stockmoney1=%s"
@@ -408,16 +444,18 @@ def buy_sell(request):#查詢
                             cursor.execute(command)
                             
                             result1 = cursor.fetchall()
-                        print(result1)
+    
                         id2=result1[0][0]
                         connection.commit()                  
                         
-                        print("result2[i][3]",str(result2[i][3]),"A",str(a))
+                        
                         if int(result2[i][3]) > a:
                             
                             with connection.cursor() as cursor:
                                 command = "update record_1 set stockmoney3=(%s - %s) where id1 =%s"
                                 cursor.execute(command,[result2[i][3],a,result2[i][0]])
+                           
+                        
             
                             connection.commit()                  
                             
@@ -447,20 +485,20 @@ def buy_sell(request):#查詢
                             connection.commit()
                             
                             with connection.cursor() as cursor:
-                                print('aaa')
-                                print(result2[i][0])
+                               
                                 command = "update record_1 set buy_sell_1=%s  where id1 =%s"
                                 cursor.execute(command,[id2,result2[i][0]])
                             connection.commit()
                             a=int(a)-int(result2[i][3])
-                            a=str(a)       
+                                  
                                 #-------------------------------------------------- 
                     buy_sell_result=("已賣出 :  "+title_text+"    /價格為 : "+stock_price+'  /張數 : '+buy_sell_count+'張') #顯示買了甚麼
         del request.session["have0"]
         del request.session["ask"]
     except:
-         messages.success(request,'請先完成 STEP 1')
-         return redirect('transaction:btn1Create')    
+        messages.success(request,'請先完成 STEP 1')
+        print(request)
+        return redirect('transaction:btn1Create')    
     return render(request, 'transaction/btn1Create.html',{'who':sent(),'stock_num':clickbuy(),'buy_sell_result':buy_sell_result,'id':request.session['saveid']})
 def btn2Create(request):
     saveid=request.session['saveid']
@@ -480,9 +518,9 @@ def btn2Create(request):
             cursor.execute(command,[saveid])
             result5 = cursor.fetchall()  #加總股票張數(庫存)
             a2=round(float(result5[i][0]),2)            #張數
-            a3=round(a1*a2*1000,2)                      #市價
-            command = "SELECT sum(cast (stockmoney2 as float)*cast (stockmoney3 as float)*1000) FROM stock where stockmoney1=%s" 
-            cursor.execute(command,[result[i][0]])
+            a3=round(a1*1000*a2,2)                      #市價
+            command = "SELECT sum(cast (stockmoney2 as float)*1000*cast (stockmoney3 as float)) FROM stock where stockmoney1=%s and stock_id=%s" 
+            cursor.execute(command,[result[i][0],saveid])
             result6 = cursor.fetchone()       
                    #成本
             a4=(a3  -  float(  result6[0]  ) ) / float( result6[0])   
@@ -503,7 +541,7 @@ def btn2Create(request):
             cash=round(float(result7[0]))
         result_money = ('現金資產'+"  "+str(cash))
         
-        command = "SELECT sum(cast(stockmoney2 as float)*cast(stockmoney3 as float)*1000) FROM stock where  stock_id=%s" 
+        command = "SELECT sum(cast(stockmoney2 as float)*1000*cast(stockmoney3 as float)) FROM stock where  stock_id=%s" 
         cursor.execute(command,[saveid])
         result8 = cursor.fetchone()
         if result8[0] is None:
@@ -522,7 +560,7 @@ def btn2Create(request):
                 cursor.execute(command,[saveid])
                 result9 = cursor.fetchall()  #加總股票張數(庫存)
                 a2=round(float(result9[i][0]),2)            #張數
-                a3+=round(a1*a2*1000,2)                      #市值(總計全部)
+                a3+=round(a1*1000*a2,2)                      #市值(總計全部)
     get_money=int(a3) - stock_money
     result456=('獲利'+"  "+ str(get_money))
     
@@ -572,9 +610,9 @@ def btn4Create(request):
         a3=(a1*1000-float(result10[i][1])*1000)
         a4= round(a3/(float(result10[i][1])*1000)*100,2)#報酬率
         t[0]+=str(result10[i][0])
-        t.append(str(a2))
+        t.append(str(round(a2,2)))
         t.append(str(a4)+"%")
-        t.append(str(result10[i][1]))
+        t.append(str(round(result10[i][1],2)))
         t.append(str(result10[i][2]))    
         t.append(a1)
         text3.append(t)
@@ -601,8 +639,8 @@ def btn5Create(request):
             a2=(a1*1000-float(result11[i][1])*1000)*float(result11[i][2])#總損益
             a3=(a1*1000-float(result11[i][1])*1000)
             a4= round(a3/(float(result11[i][1])*1000)*100,2)#報酬率
-            a5=float(result11[i][1])*float(result11[i][2])*1000#買入成本
-            a6=a1*float(result11[i][2])*1000#預估賣出收益
+            a5=float(result11[i][1])*1000*float(result11[i][2])#買入成本
+            a6=a1*1000*float(result11[i][2])#預估賣出收益
             if j == 0 :
                 text4.append(round((a2),2))
                 text4.append(str(round((a4),2))+"%")
@@ -626,7 +664,7 @@ def btn5Create(request):
         command = "SELECT stockmoney1,buy_sell_1  FROM record_1 where stock_id=%s and buy_sell = '賣出' order by buy_sell_1 desc nulls last" 
         cursor.execute(command,[saveid])
         result13 = cursor.fetchall()
-        print(result13)
+       
         if not result13:
             text7=[["無已實現損益"]]
         else:
@@ -638,10 +676,11 @@ def btn5Create(request):
                 if not result11:
                     continue
                 else:
+                    
                     d=result11[0][1]
                     for i in range (0,len(result11)):
-                        b=int(result11[i][1])*int(result11[i][2])*1000 #賣出收益
-                    command = "SELECT stockmoney1,stockmoney2,stockmoney3  FROM record_1 where stock_id=%s and buy_sell = '已實現' and buy_sell_1=%s" 
+                        b=float(result11[i][1])*1000*int(result11[i][2]) #賣出收益
+                    command = "SELECT stockmoney1,sum(stockmoney2*stockmoney3)/sum(stockmoney3),sum(stockmoney3)  FROM record_1 where stock_id=%s and buy_sell = '已實現' and buy_sell_1=%s group by stockmoney1"
                     cursor.execute(command,[saveid,n])
                     result12 = cursor.fetchall()
                     if not result12:
@@ -649,7 +688,7 @@ def btn5Create(request):
                     else:
                         c=0
                         for i in range (0,len(result12)):
-                            c+=int(result12[i][1])*int(result12[i][2])*1000 #買入成本
+                            c+=float(result12[i][1])*1000*int(result12[i][2]) #買入成本
                         pro=b-c #損益
                         rate=str(round((b-c)/c*100,2))
                         stock=twstock.realtime.get(result12[i][0])

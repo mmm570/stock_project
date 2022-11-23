@@ -24,7 +24,7 @@
 			<p>朝陽虛擬智選股</p>
 		</header>
 		<nav>
-			<ul class="nav"  data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
+			<ul id="nav"  data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
 				<li><a href="{% url 'stock:stock' %}">首頁</a></li>
 				<li><a href="{% url 'choose:choose' %}">個股看盤</a></li>
 				<li><a href="{% url 'chips:chips' %}">籌碼排序</a></li>
@@ -129,7 +129,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr><td>MySQL</td></tr>
+				<tr><td>PostgreSQL</td></tr>
 				<tr><td>Python</td></tr>
 				<tr><td>Django</td></tr>
 				<tr><td>Excel</td></tr>
